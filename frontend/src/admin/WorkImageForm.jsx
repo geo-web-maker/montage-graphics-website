@@ -32,38 +32,40 @@ export default function WorkImageForm({ token, clients, onAdded }) {
   }
 
   return (
-    <form className="admin-form" onSubmit={handleSubmit}>
+    <div className="admin-card">
       <h2>Add work image</h2>
-      <label>
-        Client
-        <select value={clientId} onChange={(e) => setClientId(e.target.value)} required>
-          <option value="" disabled>
-            Select a client
-          </option>
-          {clients.map((c) => (
-            <option key={c.id} value={c.id}>
-              {c.name}
+      <form className="admin-form" onSubmit={handleSubmit}>
+        <div className="admin-field">
+          <label>Client</label>
+          <select value={clientId} onChange={(e) => setClientId(e.target.value)} required>
+            <option value="" disabled>
+              Select a client
             </option>
-          ))}
-        </select>
-      </label>
-      <label>
-        Caption (optional)
-        <input value={caption} onChange={(e) => setCaption(e.target.value)} />
-      </label>
-      <label>
-        Image
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setFile(e.target.files[0])}
-          required
-        />
-      </label>
-      {error && <p className="admin-error">{error}</p>}
-      <button type="submit" disabled={busy}>
-        {busy ? "Uploading..." : "Add image"}
-      </button>
-    </form>
+            {clients.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="admin-field">
+          <label>Caption (optional)</label>
+          <input value={caption} onChange={(e) => setCaption(e.target.value)} />
+        </div>
+        <div className="admin-field">
+          <label>Image</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setFile(e.target.files[0])}
+            required
+          />
+        </div>
+        {error && <p className="admin-error">{error}</p>}
+        <button className="btn-primary" type="submit" disabled={busy}>
+          {busy ? "Uploading..." : "Add image"}
+        </button>
+      </form>
+    </div>
   );
 }

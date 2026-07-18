@@ -33,29 +33,31 @@ export default function ClientForm({ token, onCreated }) {
   }
 
   return (
-    <form className="admin-form" onSubmit={handleSubmit}>
+    <div className="admin-card">
       <h2>Add client</h2>
-      <label>
-        Name
-        <input value={name} onChange={(e) => setName(e.target.value)} required />
-      </label>
-      <label>
-        Slug (used in the URL, e.g. "broach")
-        <input value={slug} onChange={(e) => setSlug(e.target.value)} required />
-      </label>
-      <label>
-        Logo
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setFile(e.target.files[0])}
-          required
-        />
-      </label>
-      {error && <p className="admin-error">{error}</p>}
-      <button type="submit" disabled={busy}>
-        {busy ? "Uploading..." : "Add client"}
-      </button>
-    </form>
+      <form className="admin-form" onSubmit={handleSubmit}>
+        <div className="admin-field">
+          <label>Name</label>
+          <input value={name} onChange={(e) => setName(e.target.value)} required />
+        </div>
+        <div className="admin-field">
+          <label>Slug (used in the URL, e.g. "broach")</label>
+          <input value={slug} onChange={(e) => setSlug(e.target.value)} required />
+        </div>
+        <div className="admin-field">
+          <label>Logo</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setFile(e.target.files[0])}
+            required
+          />
+        </div>
+        {error && <p className="admin-error">{error}</p>}
+        <button className="btn-primary" type="submit" disabled={busy}>
+          {busy ? "Uploading..." : "Add client"}
+        </button>
+      </form>
+    </div>
   );
 }

@@ -1,92 +1,229 @@
-.admin-login,
-.admin-dashboard {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 40px 20px;
-  font-family: system-ui, sans-serif;
-  color: #111;
+/* Admin area — reuses the same design tokens as the public site
+   (see styles/montage.css) so this doesn't read as a bolted-on
+   generic form. Scoped under .admin-shell to keep these variables
+   from leaking into the rest of the app. */
+
+.admin-shell {
+  --bg: #121316;
+  --panel: #1b1d22;
+  --panel-raised: #22252b;
+  --ink: #f2f3f5;
+  --ink-dim: #9497a1;
+  --blue: #3d7fff;
+  --blue-hover: #5c92ff;
+  --danger: #e0644f;
+  --line: rgba(242, 243, 245, 0.1);
+
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Inter", sans-serif;
+}
+.admin-shell * { box-sizing: border-box; }
+
+.admin-shell .display {
+  font-family: "Archivo Black", sans-serif;
+  letter-spacing: -0.01em;
 }
 
-.admin-login form,
-.admin-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 24px;
-}
-
-.admin-form {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 16px;
-}
-
-.admin-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-@media (max-width: 640px) {
-  .admin-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-label {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 14px;
-}
-
-input,
-select,
-button {
-  padding: 8px;
-  font-size: 14px;
-}
-
-button {
-  cursor: pointer;
-}
-
-.admin-error {
-  color: #c0392b;
-  font-size: 14px;
-}
-
-.admin-header {
+/* ---------- shared top bar ---------- */
+.admin-topbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  padding: 22px 6vw;
+  border-bottom: 1px solid var(--line);
 }
+.admin-brand { font-size: 14px; letter-spacing: 0.06em; }
+.admin-brand b { color: var(--blue); }
+.admin-brand span { color: var(--ink-dim); }
 
-.admin-client-list {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.admin-client-list li {
+/* ---------- login ---------- */
+.admin-login-wrap {
+  min-height: 100vh;
   display: flex;
   align-items: center;
-  gap: 10px;
-  border: 1px solid #eee;
+  justify-content: center;
+  padding: 24px;
+}
+.admin-login-card {
+  width: 100%;
+  max-width: 360px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 32px 28px;
+}
+.admin-login-card .eyebrow {
+  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--blue); margin-bottom: 10px;
+}
+.admin-login-card h1 {
+  font-size: 22px; line-height: 1.2; margin-bottom: 24px;
+}
+
+/* ---------- dashboard ---------- */
+.admin-main { padding: 32px 6vw 60px; max-width: 1080px; margin: 0 auto; }
+.admin-section-label {
+  font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-dim); margin: 36px 0 16px;
+}
+.admin-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 18px;
+}
+@media (max-width: 720px) {
+  .admin-grid { grid-template-columns: 1fr; }
+}
+
+/* ---------- form cards ---------- */
+.admin-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 22px;
+}
+.admin-card h2 {
+  font-size: 14px; font-weight: 600; margin-bottom: 18px;
+}
+.admin-form { display: flex; flex-direction: column; gap: 14px; }
+
+.admin-field { display: flex; flex-direction: column; gap: 6px; }
+.admin-field label {
+  font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+.admin-shell input[type="text"],
+.admin-shell input[type="password"],
+.admin-shell input:not([type]),
+.admin-shell select {
+  background: var(--bg);
+  border: 1px solid var(--line);
   border-radius: 6px;
-  padding: 8px;
+  color: var(--ink);
+  padding: 10px 12px;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.admin-shell input:focus,
+.admin-shell select:focus {
+  border-color: var(--blue);
+}
+.admin-shell select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink-dim) 50%),
+    linear-gradient(135deg, var(--ink-dim) 50%, transparent 50%);
+  background-position: calc(100% - 18px) center, calc(100% - 13px) center;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
 }
 
-.admin-client-list img {
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
+.admin-shell input[type="file"] {
+  font-size: 13px;
+  color: var(--ink-dim);
+}
+.admin-shell input[type="file"]::file-selector-button {
+  background: var(--panel-raised);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  margin-right: 12px;
+}
+.admin-shell input[type="file"]::file-selector-button:hover {
+  border-color: var(--blue);
 }
 
-.admin-client-list code {
-  margin-left: auto;
-  color: #888;
+/* ---------- buttons ---------- */
+.admin-shell button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+}
+.btn-primary {
+  background: var(--blue);
+  color: #0a1020;
+  font-weight: 600;
+  padding: 11px 18px;
+  font-size: 14px;
+  border-radius: 6px;
+  transition: background 0.15s ease;
+}
+.btn-primary:hover:not(:disabled) { background: var(--blue-hover); }
+.btn-primary:disabled { opacity: 0.55; cursor: default; }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--ink-dim);
+  border: 1px solid var(--line) !important;
+  padding: 9px 16px;
+  font-size: 13px;
+  border-radius: 6px;
+}
+.btn-ghost:hover { color: var(--ink); border-color: var(--ink-dim) !important; }
+
+.btn-danger {
+  background: transparent;
+  color: var(--danger);
+  border: 1px solid rgba(224, 100, 79, 0.35) !important;
+  padding: 7px 12px;
+  font-size: 12px;
+  border-radius: 6px;
+}
+.btn-danger:hover:not(:disabled) { background: rgba(224, 100, 79, 0.1); }
+.btn-danger:disabled { opacity: 0.5; cursor: default; }
+
+/* ---------- feedback states ---------- */
+.admin-error {
+  font-size: 13px;
+  color: var(--danger);
+  background: rgba(224, 100, 79, 0.08);
+  border: 1px solid rgba(224, 100, 79, 0.25);
+  border-radius: 6px;
+  padding: 8px 12px;
+}
+.admin-empty {
+  color: var(--ink-dim);
+  font-size: 14px;
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  padding: 24px;
+  text-align: center;
+}
+
+/* ---------- client list ---------- */
+.admin-client-grid {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+.admin-client-grid li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+.admin-client-grid img {
+  width: 36px; height: 36px; object-fit: contain;
+  border-radius: 4px; background: var(--bg); flex: 0 0 auto;
+}
+.admin-client-grid .admin-client-meta {
+  flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px;
+}
+.admin-client-grid .admin-client-name {
+  font-size: 14px; color: var(--ink);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.admin-client-grid .admin-client-slug {
+  font-size: 11px; color: var(--ink-dim);
 }

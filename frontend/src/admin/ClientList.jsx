@@ -22,13 +22,19 @@ export default function ClientList({ token, clients, onDeleted }) {
   }
 
   return (
-    <ul className="admin-client-list">
+    <ul className="admin-client-grid">
       {clients.map((c) => (
         <li key={c.id}>
           <img src={c.logo_url} alt={c.name} />
-          <span>{c.name}</span>
-          <code>{c.slug}</code>
-          <button onClick={() => handleDelete(c.id)} disabled={busyId === c.id}>
+          <div className="admin-client-meta">
+            <span className="admin-client-name">{c.name}</span>
+            <span className="admin-client-slug">{c.slug}</span>
+          </div>
+          <button
+            className="btn-danger"
+            onClick={() => handleDelete(c.id)}
+            disabled={busyId === c.id}
+          >
             {busyId === c.id ? "Deleting..." : "Delete"}
           </button>
         </li>
