@@ -1,13 +1,72 @@
+// Thin wrapper around fetch(). Every function throws on a non-2xx response
+// so callers can just try/catch instead of checking res.ok everywhere.
+
 const BASE_URL = import.meta.env.VITE_API_URL;
 
-export async function getClients() {
-  const res = await fetch(`${BASE_URL}/clients`);
-  if (!res.ok) throw new Error("Failed to load clients");
+async function request(path, { method = "GET", body, token } = {}) {
+  const headers = {};
+  if (body) headers["Content-Type"] = "application/json";
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+
+  const res = await fetch(`${BASE_URL}${path}`, {
+    method,
+    headers,
+    body: body ? JSON.stringify(body) : undefined,
+  });
+
+  if (!res.ok) {
+    // FastAPI error bodies look like { "detail": "..." }
+    const detail = await res.json().catch(() => null);
+    throw new Error(detail?.detail || `Request failed: ${res.status}`);
+  }
+
+  // 204 No Content has no body to parse
+  if (res.status === 204) return null;
   return res.json();
 }
 
-export async function getClientWork(slug) {
-  const res = await fetch(`${BASE_URL}/clients/${slug}/work`);
-  if (!res.ok) throw new Error("Failed to load work images");
-  return res.json();
+// ---- Public ----
+
+export function getClients() {
+  return request("/clients");
+}
+
+export function getClientWork(slug) {
+  return request(`/clients/${slug}/work`);
+}
+
+// ---- Auth ----
+
+export function login(username, password) {
+  return request("/auth/login", { method: "POST", body: { username, password } });
+}
+
+// ---- Admin: clients ----
+
+export function createClient(token, payload) {
+  return request("/admin/clients", { method: "POST", body: payload, token });
+}
+
+export function updateClient(token, clientId, payload) {
+  return request(`/admin/clients/${clientId}`, { method: "PATCH", body: payload, token });
+}
+
+export function deleteClient(token, clientId) {
+  return request(`/admin/clients/${clientId}`, { method: "DELETE", token });
+}
+
+// ---- Admin: work images ----
+
+export function addWorkImage(token, clientId, payload) {
+  return request(`/admin/clients/${clientId}/work`, { method: "POST", body: payload, token });
+}
+
+export function deleteWorkImage(token, workImageId) {
+  return request(`/admin/work/${workImageId}`, { method: "DELETE", token });
+}
+
+// ---- Admin: upload ----
+
+export function getUploadSignature(token) {
+  return request("/admin/upload-signature", { token });
 }
