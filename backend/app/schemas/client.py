@@ -7,6 +7,7 @@ class ClientCreate(BaseModel):
     name: str
     slug: str
     logo_url: str
+    logo_dominant_color: str = "#1B1D22"
     trusted_by_order: int = 0
     is_visible: bool = True
 
@@ -14,6 +15,7 @@ class ClientCreate(BaseModel):
 class ClientUpdate(BaseModel):
     name: str | None = None
     logo_url: str | None = None
+    logo_dominant_color: str | None = None
     trusted_by_order: int | None = None
     is_visible: bool | None = None
 
@@ -23,6 +25,7 @@ class ClientOut(BaseModel):
     name: str
     slug: str
     logo_url: str
+    logo_dominant_color: str
     trusted_by_order: int
     is_visible: bool
 

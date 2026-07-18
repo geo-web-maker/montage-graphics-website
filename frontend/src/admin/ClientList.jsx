@@ -84,7 +84,7 @@ export default function ClientList({ token, clients, onDeleted }) {
                 {Array.isArray(work) && work.length > 0 && (
                   <div className="admin-work-grid">
                     {work.map((img) => (
-                      <div className="admin-work-tile" key={img.id}>
+                      <div className={`admin-work-tile shape-${img.shape}`} key={img.id}>
                         <img src={img.image_url} alt={img.caption || c.name} />
                         {img.caption && (
                           <span className="admin-work-caption">{img.caption}</span>

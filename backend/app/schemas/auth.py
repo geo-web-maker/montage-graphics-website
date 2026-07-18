@@ -20,3 +20,4 @@ class UploadSignatureResponse(BaseModel):
     api_key: str
     cloud_name: str
     folder: str
+    colors: str | None = None

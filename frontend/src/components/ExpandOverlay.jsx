@@ -1,5 +1,5 @@
-import React from "react";
-import { CLIENT_WORK_COUNTS } from "../data";
+import React, { useEffect, useState } from "react";
+import { getClientWork } from "../api/client";
 
 export default function ExpandOverlay({
   expanded,
@@ -9,7 +9,18 @@ export default function ExpandOverlay({
   onTransitionEnd,
   onClose,
 }) {
-  const tileCount = expanded ? CLIENT_WORK_COUNTS[expanded.client] || 4 : 0;
+  const [work, setWork] = useState([]);
+
+  useEffect(() => {
+    if (!expanded) {
+      setWork([]);
+      return;
+    }
+    // expanded.client is the client's slug (see WorkCarousel's onCardOpen).
+    getClientWork(expanded.client)
+      .then(setWork)
+      .catch((err) => console.error("Failed to load work images:", err));
+  }, [expanded]);
 
   return (
     <>
@@ -28,8 +39,11 @@ export default function ExpandOverlay({
           onTransitionEnd={onTransitionEnd}
         >
           <div className={`expand-grid${gridVisible ? " visible" : ""}`}>
-            {Array.from({ length: tileCount }).map((_, i) => (
-              <div className="tile" key={i} />
+            {work.map((img) => (
+              <div className={`tile shape-${img.shape}`} key={img.id}>
+                <img src={img.image_url} alt={img.caption || ""} />
+                {img.caption && <span className="tile-caption">{img.caption}</span>}
+              </div>
             ))}
           </div>
         </div>

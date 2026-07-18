@@ -5,6 +5,7 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 from app.core.deps import get_current_admin
 from app.database import get_database
 from app.schemas.work_image import WorkImageCreate, WorkImageOut
+from app.services.layout import classify_shape
 
 router = APIRouter(
     prefix="/admin",
@@ -23,7 +24,8 @@ async def add_work_image(
     if client is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Client not found")
 
-    doc = payload.model_dump() | {"client_id": client_id}
+    shape = classify_shape(payload.width, payload.height)
+    doc = payload.model_dump() | {"client_id": client_id, "shape": shape}
     result = await db.work_images.insert_one(doc)
     created = await db.work_images.find_one({"_id": result.inserted_id})
     return created

@@ -18,8 +18,13 @@ export default function ClientForm({ token, onCreated }) {
     setBusy(true);
     setError(null);
     try {
-      const logo_url = await uploadToCloudinary(token, file);
-      const client = await createClient(token, { name, slug, logo_url });
+      const { url, dominantColor } = await uploadToCloudinary(token, file, { forLogo: true });
+      const client = await createClient(token, {
+        name,
+        slug,
+        logo_url: url,
+        logo_dominant_color: dominantColor || "#1B1D22",
+      });
       onCreated(client);
       setName("");
       setSlug("");

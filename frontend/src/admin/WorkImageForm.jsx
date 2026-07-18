@@ -18,8 +18,13 @@ export default function WorkImageForm({ token, clients, onAdded }) {
     setBusy(true);
     setError(null);
     try {
-      const image_url = await uploadToCloudinary(token, file);
-      const workImage = await addWorkImage(token, clientId, { image_url, caption });
+      const { url, width, height } = await uploadToCloudinary(token, file);
+      const workImage = await addWorkImage(token, clientId, {
+        image_url: url,
+        caption,
+        width,
+        height,
+      });
       onAdded(workImage);
       setCaption("");
       setFile(null);

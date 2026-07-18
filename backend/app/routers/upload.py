@@ -12,7 +12,9 @@ router = APIRouter(
 
 
 @router.get("/upload-signature", response_model=UploadSignatureResponse)
-async def get_upload_signature():
+async def get_upload_signature(for_logo: bool = False):
     """The browser uses this to upload a file directly to Cloudinary —
-    the file itself never passes through our server."""
-    return build_upload_signature()
+    the file itself never passes through our server. for_logo=true also
+    asks Cloudinary to analyze the image's dominant colors, used for the
+    client logo's background-tint effect."""
+    return build_upload_signature(colors=for_logo)

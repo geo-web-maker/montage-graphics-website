@@ -7,6 +7,8 @@ class WorkImageCreate(BaseModel):
     image_url: str
     caption: str = ""
     display_order: int = 0
+    width: int
+    height: int
 
 
 class WorkImageOut(BaseModel):
@@ -15,6 +17,7 @@ class WorkImageOut(BaseModel):
     image_url: str
     caption: str
     display_order: int
+    shape: str
 
     class Config:
         populate_by_name = True

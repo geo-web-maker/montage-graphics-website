@@ -67,6 +67,6 @@ export function deleteWorkImage(token, workImageId) {
 
 // ---- Admin: upload ----
 
-export function getUploadSignature(token) {
-  return request("/admin/upload-signature", { token });
+export function getUploadSignature(token, { forLogo = false } = {}) {
+  return request(`/admin/upload-signature?for_logo=${forLogo}`, { token });
 }

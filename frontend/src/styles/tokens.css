@@ -14,4 +14,10 @@
   --teal: #1b9e86;
   --danger: #e0644f;
   --line: rgba(242, 243, 245, 0.1);
+
+  /* Liquid glass — shared by every button across the site */
+  --glass-bg: rgba(242, 243, 245, 0.08);
+  --glass-bg-strong: rgba(61, 127, 255, 0.35);
+  --glass-border: rgba(242, 243, 245, 0.35);
+  --glass-highlight: rgba(255, 255, 255, 0.45);
 }

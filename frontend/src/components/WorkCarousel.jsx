@@ -1,16 +1,17 @@
-import React,{useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { getClients } from "../api/client";
 
 export default function WorkCarousel({ onCardOpen }) {
-  const[client, setClient] = useState([]);
+  const [clients, setClients] = useState([]);
 
-  useEffect(()=> {
+  useEffect(() => {
     getClients()
-    .then(setClient)
-    .catch((err)=>console.error(err))},[])
+      .then(setClients)
+      .catch((err) => console.error(err));
+  }, []);
 
-  const items = [...client,...client ];
-  
+  const items = [...clients, ...clients];
+
   return (
     <section className="work" id="work">
       <div className="work-head">
@@ -25,12 +26,16 @@ export default function WorkCarousel({ onCardOpen }) {
             <div
               className="wc-card"
               tabIndex={0}
-              key={'${card.id}-${i}'}
+              key={`${card.id}-${i}`}
+              style={{
+                background: `linear-gradient(160deg, ${card.logo_dominant_color}55, #141518 75%)`,
+              }}
               onClick={(e) => onCardOpen(e, card.slug)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") onCardOpen(e, card.slug);
               }}
             >
+              <img className="wc-logo" src={card.logo_url} alt={card.name} />
               <span className="wc-label">{card.name}</span>
             </div>
           ))}
