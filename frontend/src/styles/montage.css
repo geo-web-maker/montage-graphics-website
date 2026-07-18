@@ -2,15 +2,7 @@
    be dropped into a host app without leaking into global selectors. */
 
 .montage-root{
-  --bg:#121316;
-  --panel:#1B1D22;
-  --ink:#F2F3F5;
-  --ink-dim:#9497A1;
-  --blue:#3D7FFF;
-  --blue-dim:#1E3E80;
-  --amber:#F2B705;
-  --teal:#1B9E86;
-  --line: rgba(242,243,245,0.10);
+  /* colors come from styles/tokens.css, loaded globally via index.css */
   background:var(--bg); color:var(--ink); font-family:'Inter',sans-serif;
   overflow-x:hidden;
 }

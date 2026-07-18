@@ -1,0 +1,17 @@
+/* Shared design tokens — one place to adjust brand colors, used by both
+   the public site (montage.css, under .montage-root) and the admin
+   area (admin.css, under .admin-shell). */
+:root {
+  --bg: #121316;
+  --panel: #1b1d22;
+  --panel-raised: #22252b;
+  --ink: #f2f3f5;
+  --ink-dim: #9497a1;
+  --blue: #3d7fff;
+  --blue-hover: #5c92ff;
+  --blue-dim: #1e3e80;
+  --amber: #f2b705;
+  --teal: #1b9e86;
+  --danger: #e0644f;
+  --line: rgba(242, 243, 245, 0.1);
+}

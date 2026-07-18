@@ -4,15 +4,9 @@
    from leaking into the rest of the app. */
 
 .admin-shell {
-  --bg: #121316;
-  --panel: #1b1d22;
+  /* colors come from styles/tokens.css, loaded globally via index.css —
+     same source the public site (montage.css) uses, so both stay in sync */
   --panel-raised: #22252b;
-  --ink: #f2f3f5;
-  --ink-dim: #9497a1;
-  --blue: #3d7fff;
-  --blue-hover: #5c92ff;
-  --danger: #e0644f;
-  --line: rgba(242, 243, 245, 0.1);
 
   min-height: 100vh;
   background: var(--bg);
@@ -196,34 +190,101 @@
   text-align: center;
 }
 
-/* ---------- client list ---------- */
-.admin-client-grid {
-  list-style: none;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 12px;
-}
-.admin-client-grid li {
+/* ---------- client list (accordion: click a client to see their work) ---------- */
+.admin-client-list {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
+  gap: 10px;
+}
+.admin-client-row {
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 8px;
+  overflow: hidden;
+}
+.admin-client-row.open {
+  border-color: var(--blue-dim);
+}
+.admin-client-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: transparent;
+  border: none;
   padding: 12px 14px;
+  text-align: left;
+  color: inherit;
+  font-family: inherit;
 }
-.admin-client-grid img {
-  width: 36px; height: 36px; object-fit: contain;
-  border-radius: 4px; background: var(--bg); flex: 0 0 auto;
+.admin-client-header img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  border-radius: 4px;
+  background: var(--bg);
+  flex: 0 0 auto;
 }
-.admin-client-grid .admin-client-meta {
-  flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px;
+.admin-client-name {
+  flex: 1;
+  font-size: 14px;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-.admin-client-grid .admin-client-name {
-  font-size: 14px; color: var(--ink);
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+.admin-client-slug {
+  font-size: 11px;
+  color: var(--ink-dim);
 }
-.admin-client-grid .admin-client-slug {
-  font-size: 11px; color: var(--ink-dim);
+.admin-chevron {
+  font-size: 16px;
+  color: var(--ink-dim);
+  width: 20px;
+  text-align: center;
+  flex: 0 0 auto;
+}
+
+.admin-client-body {
+  padding: 14px 14px 16px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.admin-work-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+}
+.admin-work-tile {
+  position: relative;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  aspect-ratio: 1;
+  background: var(--bg);
+}
+.admin-work-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.admin-work-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  font-size: 10px;
+  padding: 4px 6px;
+  background: rgba(18, 19, 22, 0.75);
+  color: var(--ink);
+}
+.admin-work-delete {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  padding: 3px 8px;
+  font-size: 10px;
 }
