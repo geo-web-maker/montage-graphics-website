@@ -29,12 +29,22 @@ export async function uploadToCloudinary(token, file, { forLogo = false } = {}) 
     throw new Error(errBody?.error?.message || "Cloudinary upload failed");
   }
 
-  const data = await res.json();
+const data = await res.json();
 
-  // data.colors looks like [["#3d7fff", 42.1], ["#121316", 31.7], ...],
-  // sorted by how much of the image each color covers — [0][0] is the
-  // single most dominant hex.
-  const dominantColor = data.colors?.[0]?.[0] ?? null;
+// Cloudinary's colors[] counts transparent pixels as black, so on
+// mostly-transparent logo PNGs the top entry is often near-black —
+// useless as a tint. Skip near-black/near-white entries and take the
+// first genuinely saturated color instead.
+const isNeutral = (hex) => {
+  const n = parseInt(hex.slice(1), 16);
+  const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  const lightness = (Math.max(r, g, b) + Math.min(r, g, b)) / 2 / 255;
+  return lightness < 0.12 || lightness > 0.92;
+};
+const dominantColor =
+  data.colors?.find(([hex]) => !isNeutral(hex))?.[0] ??
+  data.colors?.[0]?.[0] ??
+  null;
 
   return {
     url: data.secure_url,
