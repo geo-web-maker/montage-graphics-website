@@ -12,7 +12,7 @@ class WorkImageCreate(BaseModel):
 
 
 class WorkImageOut(BaseModel):
-    id: PyObjectId = Field(alias="_id")
+    id: PyObjectId = Field(validation_alias="_id")
     client_id: str
     image_url: str
     caption: str
