@@ -28,7 +28,7 @@ export default function WorkCarousel({ onCardOpen }) {
               tabIndex={0}
               key={`${card.id}-${i}`}
               style={{
-                background: `linear-gradient(160deg, ${card.logo_dominant_color}55, #141518 75%)`,
+                background: `linear-gradient(160deg, ${card.logo_dominant_color}dd, ${card.logo_dominant_color}33 55%, #141518 100%)`,
               }}
               onClick={(e) => onCardOpen(e, card.slug)}
               onKeyDown={(e) => {
