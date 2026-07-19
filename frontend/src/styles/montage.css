@@ -233,16 +233,15 @@
 .montage-root footer{padding:30px 6vw 50px; border-top:1px solid var(--line); font-size:12px; color:var(--ink-dim); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
 
 @media (max-width:760px){
-  .montage-root .hero{grid-template-columns:1fr; padding:40px 5vw 20px;}
-  .montage-root .hero-visual{order:-1; margin-bottom:20px;}
-  .montage-root .portrait{width:200px; height:200px;}
+  .montage-root .hero{grid-template-columns:1fr; padding:72px 5vw 20px;}
+  .montage-root .hero-visual{order:-1; margin-bottom:32px;}
+  .montage-root .portrait{width:260px; height:260px;}
   .montage-root .stat-float{width:100px; padding:9px 12px; font-size:11px;}
-  .montage-root .orbit{ --orbit-radius: 130px; animation-duration: 16s; }
+  .montage-root .orbit{ --orbit-radius: 160px; animation-duration: 16s; }
   .montage-root .stat-float{ animation-duration: 16s; }
   .montage-root header{padding:16px 5vw;}
   .montage-root nav{display:none;}
   .montage-root .reel{padding:14px 5vw; gap:16px;}
-  .montage-root .reel-label{display:none;}
   .montage-root .work{padding:0 5vw 50px;}
   .montage-root .wc-track{flex-direction:column; animation-name:montage-wcScrollY; width:auto; height:520px;}
   .montage-root .wc-card{flex:0 0 150px; width:100%;}
