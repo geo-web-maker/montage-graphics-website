@@ -21,7 +21,7 @@ class ClientUpdate(BaseModel):
 
 
 class ClientOut(BaseModel):
-    id: PyObjectId = Field(alias="_id")
+    id: PyObjectId = Field(validation_alias="_id")
     name: str
     slug: str
     logo_url: str
