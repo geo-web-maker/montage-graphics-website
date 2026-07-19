@@ -21,6 +21,9 @@ class ClientUpdate(BaseModel):
 
 
 class ClientOut(BaseModel):
+    # validation_alias (not alias) so Mongo's "_id" is accepted on the way in,
+    # but the JSON sent to the frontend uses "id" — which is what every
+    # frontend consumer (ClientList, WorkCarousel, TrustedByReel) reads.
     id: PyObjectId = Field(validation_alias="_id")
     name: str
     slug: str

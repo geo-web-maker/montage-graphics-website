@@ -29,22 +29,27 @@ export async function uploadToCloudinary(token, file, { forLogo = false } = {}) 
     throw new Error(errBody?.error?.message || "Cloudinary upload failed");
   }
 
-const data = await res.json();
+  const data = await res.json();
 
-// Cloudinary's colors[] counts transparent pixels as black, so on
-// mostly-transparent logo PNGs the top entry is often near-black —
-// useless as a tint. Skip near-black/near-white entries and take the
-// first genuinely saturated color instead.
-const isNeutral = (hex) => {
-  const n = parseInt(hex.slice(1), 16);
-  const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
-  const lightness = (Math.max(r, g, b) + Math.min(r, g, b)) / 2 / 255;
-  return lightness < 0.12 || lightness > 0.92;
-};
-const dominantColor =
-  data.colors?.find(([hex]) => !isNeutral(hex))?.[0] ??
-  data.colors?.[0]?.[0] ??
-  null;
+  // data.colors looks like [["#3d7fff", 42.1], ["#121316", 31.7], ...],
+  // sorted by how much of the image each color covers. We don't just take
+  // [0][0] though — Cloudinary's colors=true analysis counts fully
+  // transparent pixels as black, so a mostly-transparent logo PNG (icon on
+  // a transparent canvas, which is most of our client logos) ends up with
+  // a near-black entry dominating the list even though it's not part of
+  // the actual artwork. Skip near-black/near-white entries and use the
+  // first genuinely saturated color instead, so the card background tint
+  // reflects the logo's real colors rather than its transparent canvas.
+  const isNeutral = (hex) => {
+    const n = parseInt(hex.slice(1), 16);
+    const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+    const lightness = (Math.max(r, g, b) + Math.min(r, g, b)) / 2 / 255;
+    return lightness < 0.12 || lightness > 0.92;
+  };
+  const dominantColor =
+    data.colors?.find(([hex]) => !isNeutral(hex))?.[0] ??
+    data.colors?.[0]?.[0] ??
+    null;
 
   return {
     url: data.secure_url,
