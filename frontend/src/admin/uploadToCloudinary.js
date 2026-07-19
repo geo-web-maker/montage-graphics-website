@@ -35,17 +35,19 @@ export async function uploadToCloudinary(token, file, { forLogo = false } = {}) 
   // BUT: per Cloudinary's own docs, if the image has any transparency
   // (true for basically every client logo — an icon on a transparent
   // canvas), entries come back as 8-digit RRGGBBAA hex, not 6-digit RGB.
-  // Two things follow from that:
-  //   1. The dominant entry is very likely the transparent canvas itself
-  //      (e.g. "#00000000") since it covers the most pixels — not the
-  //      actual artwork. Skip fully/mostly transparent and near-black/
-  //      near-white entries, and use the first genuinely visible,
-  //      saturated color instead.
-  //   2. Whatever hex we DO pick must be normalized to a plain 6-digit
+  //   1. Whatever hex we pick must be normalized to a plain 6-digit
   //      "#RRGGBB" before it's saved — WorkCarousel.jsx appends its own
   //      alpha suffix ("55") for the gradient tint, and appending that to
   //      an already-8-digit hex produces a 10-digit value, which isn't
   //      valid CSS and gets silently dropped by the browser.
+  //   2. "Not transparent and not near-black/near-white" isn't enough on
+  //      its own — a logo's dark outline strokes are opaque and can land
+  //      right at the edge of that lightness range, but they're still
+  //      just gray (near-zero saturation), not the brand color. Instead
+  //      of taking the first entry that merely clears the lightness bar,
+  //      require real saturation and pick whichever *usable* candidate is
+  //      most saturated — that's the actual color a person would call
+  //      "the logo's color," not just whatever covers the most pixels.
   const parseColor = (hex) => {
     const clean = hex.replace("#", "");
     const hasAlpha = clean.length === 8;
@@ -53,16 +55,27 @@ export async function uploadToCloudinary(token, file, { forLogo = false } = {}) 
     const g = parseInt(clean.slice(2, 4), 16);
     const b = parseInt(clean.slice(4, 6), 16);
     const a = hasAlpha ? parseInt(clean.slice(6, 8), 16) : 255;
-    return { r, g, b, a, rgbHex: `#${clean.slice(0, 6)}` };
+    const max = Math.max(r, g, b) / 255, min = Math.min(r, g, b) / 255;
+    const lightness = (max + min) / 2;
+    const saturation =
+      max === min ? 0 : lightness < 0.5
+        ? (max - min) / (max + min)
+        : (max - min) / (2 - max - min);
+    return { a, lightness, saturation, rgbHex: `#${clean.slice(0, 6)}` };
   };
-  const isUsable = ({ r, g, b, a }) => {
-    if (a < 128) return false; // mostly/fully transparent — not real artwork
-    const lightness = (Math.max(r, g, b) + Math.min(r, g, b)) / 2 / 255;
-    return lightness >= 0.12 && lightness <= 0.92;
-  };
+  const isUsable = ({ a, lightness }) =>
+    a >= 128 && lightness >= 0.12 && lightness <= 0.92;
+
   const parsedColors = (data.colors ?? []).map(([hex]) => parseColor(hex));
+  const usableColors = parsedColors.filter(isUsable);
+  const mostSaturated = usableColors.length
+    ? usableColors.reduce((best, c) => (c.saturation > best.saturation ? c : best))
+    : null;
   const dominantColor =
-    parsedColors.find(isUsable)?.rgbHex ?? parsedColors[0]?.rgbHex ?? null;
+    (mostSaturated && mostSaturated.saturation >= 0.2 ? mostSaturated.rgbHex : null) ??
+    usableColors[0]?.rgbHex ??
+    parsedColors[0]?.rgbHex ??
+    null;
 
   return {
     url: data.secure_url,
