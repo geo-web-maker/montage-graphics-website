@@ -98,6 +98,14 @@
 .montage-root .reel-track span{
   font-size:14px; font-weight:500; color:var(--ink-dim); letter-spacing:0.02em;
 }
+.montage-root .reel-track img{
+  height:28px; width:auto; max-width:120px;
+  object-fit:contain; flex:0 0 auto;
+  filter:brightness(0) invert(1);
+  opacity:.55;
+  transition:opacity .2s ease;
+}
+.montage-root .reel-track img:hover{ opacity:.9; }
 @keyframes montage-scroll{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
 
 /* Work carousel */
