@@ -3,7 +3,9 @@ import React from "react";
 export default function Header() {
   return (
     <header>
-    <img src="/logo.png" alt="Montage Graphics" className="logo" />
+      <div className="logo">
+        <img src="/logo.png" alt="Montage Graphics" />
+      </div>
       <nav>
         <a href="#work">Work</a>
         <a href="#skills">Skills</a>
