@@ -211,7 +211,7 @@
   height:auto; aspect-ratio: 3 / 4; border-radius:8px; border:1px solid var(--line);
   background-position:top center; background-repeat:no-repeat;
   margin-bottom:16px;   max-width:380px;
-  margin:0 0 16px auto;
+  margin:0 auto 16px
 }
 .montage-root .chips{display:flex; flex-wrap:wrap; gap:10px;}
 .montage-root .chip{border:1px solid var(--line); border-radius:999px; padding:7px 14px; font-size:12px; color:var(--ink-dim);}
