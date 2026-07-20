@@ -160,7 +160,7 @@
   border:1px solid var(--line);
 }
 .montage-root .expand-grid .tile img{
-  width:100%; height:100%; object-fit:cover; display:block;
+  width:100%; height:100%; object-fit:contain; display:block;
 }
 /* Jigsaw shapes — dense auto-flow backfills gaps around these automatically */
 .montage-root .expand-grid .tile.shape-banner{ grid-column:span 2; }
