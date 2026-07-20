@@ -21,7 +21,7 @@ export default function Hero() {
         </div>
       </div>
       <div className="hero-visual">
-        <div className="portrait" />
+        <div className="portrait" style={{backgroundImage: 'url(/hero.jpeg)', backgroundSize: 'cover'}} />
         <div className="orbit">
           <div className="orbit-item sf1">
             <div className="stat-float">
