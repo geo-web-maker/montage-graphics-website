@@ -28,7 +28,7 @@ export default function About() {
         </div>
       </div>
       <div className="about-visual">
-        <div className="frame" style={{backgroundImage: 'url(/about adjusted.webp)', backgroundSize: 'cover'}}/>
+        <div className="frame" style={{backgroundImage: 'url(/about-adjusted.webp)', backgroundSize: 'cover'}}/>
         <div className="chips">
           <div className="chip">Photoshop</div>
           <div className="chip">Illustrator</div>
