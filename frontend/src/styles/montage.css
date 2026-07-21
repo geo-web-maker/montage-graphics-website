@@ -210,8 +210,13 @@
 .montage-root .dot{width:7px; height:7px; border-radius:50%; background:var(--blue); flex:0 0 auto;}
 
 .montage-root .about-visual .frame{
-  height:300px; border-radius:8px; border:1px solid var(--line);
-  background:linear-gradient(160deg,#20242c,#141518); margin-bottom:16px;
+  height:auto;
+  width:100%;
+  aspect-ratio: 16 / 9;
+  border-radius:8px; border:1px solid var(--line);
+  background-position:center;
+  background-repeat:no-repeat;
+  margin-bottom:16px;
 }
 .montage-root .chips{display:flex; flex-wrap:wrap; gap:10px;}
 .montage-root .chip{
