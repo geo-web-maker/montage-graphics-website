@@ -39,21 +39,6 @@ export const PLATFORMS = [
   { prefix: "Shutter", suffix: "stock" },
 ];
 
-export const REVIEWS = [
-  {
-    quote:
-      "An excellent professional — very meticulous with the work we agreed on. He understood exactly what we needed and helped a lot.",
-    who: "Matheus Gobetti",
-    role: "Web designer",
-  },
-  {
-    quote:
-      "Fast turnaround on our weekly flyers and the templates meant our own team could keep the system going without him.",
-    who: "Local client",
-    role: "Restaurant owner",
-  },
-];
-
 export const CONTACT = {
   email: "montagegraphics@gmail.com",
   whatsapp: "+256 763675577 / +256 793740538",
