@@ -1,9 +1,14 @@
+import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
 
 from app.config import get_settings
+from app.core.rate_limit import limiter
 from app.database import close_mongo_connection, connect_to_mongo, ensure_indexes
 from app.routers import (
     admin_clients,
@@ -16,6 +21,7 @@ from app.routers import (
     work,
 )
 
+logger = logging.getLogger("montage")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -28,6 +34,17 @@ async def lifespan(app: FastAPI):
 def create_app() -> FastAPI:
     settings = get_settings()
     app = FastAPI(title="Montage Graphics API", lifespan=lifespan)
+
+    if settings.jwt_secret == "change-me-in-production":
+        logger.warning(
+            "JWT_SECRET is still set to the default placeholder value. "
+            "Every admin token can be forged. Set a strong, random JWT_SECRET "
+            "in the deployment's environment variables."
+        )
+
+    app.state.limiter = limiter
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+    app.add_middleware(SlowAPIMiddleware)
 
     app.add_middleware(
         CORSMiddleware,
