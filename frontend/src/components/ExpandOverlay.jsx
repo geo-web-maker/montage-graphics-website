@@ -102,7 +102,7 @@ export default function ExpandOverlay({
                 ? { "--row-span": span.rowSpan, "--col-span": span.colSpan }
                 : undefined;
               return (
-                <div className="tile" key={img.id} style={style}>
+                <div className={`tile${span ? " measured" : ""}`} key={img.id} style={style}>
                   <img
                     src={img.image_url}
                     alt={img.caption || ""}
