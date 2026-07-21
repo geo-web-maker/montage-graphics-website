@@ -51,7 +51,11 @@ export default function ExpandOverlay({
       for (const img of work) {
         const ratio = ratios[img.id];
         if (!ratio) continue;
-        const colSpan = ratio >= WIDE_RATIO ? Math.min(2, cols) : 1;
+        // Scale colSpan to the image's real ratio instead of a flat 1-or-2
+        // cap — a 3:1 banner needs roughly twice the columns a 1.6:1 image
+        // does, or the box ends up too tall for the image and object-fit
+        // crops the sides to compensate.
+        const colSpan = Math.min(cols, Math.max(1, Math.round(ratio / WIDE_RATIO)));
         const widthPx = colSpan * colWidth + (colSpan - 1) * GAP;
         const heightPx = widthPx / ratio;
         const rowSpan = Math.max(1, Math.ceil((heightPx + GAP) / (ROW_UNIT + GAP)));
