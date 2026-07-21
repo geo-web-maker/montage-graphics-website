@@ -29,7 +29,21 @@ export const SKILLS = [
   { name: "After Effects", pct: 90, motion: true },
   { name: "Cinema 4D", pct: 88, motion: true },
   { name: "Figma", pct: 75, motion: false },
+  { name: "Blender", pct: 90, motion: true },
 ];
+
+// Each tool's own real brand color (as "r,g,b" so it can be dropped into
+// rgba()), shared by the Skills grid and the About chips so both stay in
+// sync from one place.
+export const BRAND_ACCENT = {
+  Photoshop: "49,168,255", // Adobe Photoshop blue
+  Illustrator: "255,154,0", // Adobe Illustrator orange
+  "After Effects": "153,153,255", // Adobe After Effects lavender
+  "Cinema 4D": "228,87,46", // Maxon Cinema 4D orange-red
+  Figma: "162,89,255", // Figma purple
+  Canva: "0,196,204", // Canva teal
+  Blender: "245,121,42", // Blender orange
+};
 
 export const PLATFORMS = [
   { prefix: "Be", suffix: "hance" },
