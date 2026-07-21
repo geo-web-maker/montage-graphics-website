@@ -15,8 +15,8 @@
   padding:22px 6vw; border-bottom:1px solid var(--line);
   position:sticky; top:0; background:var(--bg); z-index:10;
 }
-.montage-root .logo{font-size:14px; letter-spacing:0.06em;}
-.montage-root .logo b{color:var(--blue);}
+.montage-root .logo{font-size:14px; letter-spacing:0.06em; display:flex; align-items:center;}
+.montage-root .logo img{height:28px; width:auto; display:block;}
 .montage-root nav{display:flex; gap:28px; font-size:13px; color:var(--ink-dim);}
 .montage-root nav a{color:inherit; text-decoration:none;}
 .montage-root .cta{
