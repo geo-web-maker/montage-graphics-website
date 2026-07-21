@@ -1,9 +1,8 @@
 import React from "react";
-import { SKILLS } from "../data";
+import { SKILLS, BRAND_ACCENT } from "../data";
 
 // Drop real logo files into frontend/src/assets/skill-logos/ using these
-// exact filenames (see the placeholder .txt files generated alongside this
-// component) and they'll be picked up automatically — no code changes
+// exact filenames and they'll be picked up automatically — no code changes
 // needed. If a file for a given tool is missing, the colored initials
 // badge below is shown instead, so nothing breaks in the meantime.
 const LOGO_FILES = {
@@ -13,6 +12,7 @@ const LOGO_FILES = {
   "Cinema 4D": "cinema-4d.svg",
   Figma: "figma.svg",
   Canva: "canva.svg",
+  Blender: "blender.svg",
 };
 
 // Fallback badge (colored initials) shown until a real logo file exists,
@@ -24,6 +24,7 @@ const FALLBACK = {
   "Cinema 4D": { bg: "linear-gradient(150deg,#3a3f4a,#101216)", label: "C4" },
   Figma: { bg: "linear-gradient(150deg,#ff5fa8,#3d7fff)", label: "Fi" },
   Canva: { bg: "linear-gradient(150deg,#22c1c3,#0b5f60)", label: "Ca" },
+  Blender: { bg: "linear-gradient(150deg,#f5792a,#8a3d00)", label: "Bl" },
 };
 
 // Vite's import.meta.glob pulls in whatever logo files actually exist in
@@ -73,22 +74,28 @@ export default function Skills() {
             opportunity to combine creativity, technical precision, and
             strategic vision to achieve real digital results.
           </p>
-          <a className="cta skills-cta" href="#contact">
+          <a className="cta" href="#contact">
             Get in touch
           </a>
         </div>
 
         <div className="skills-grid">
-          {SKILLS.map((skill) => (
-            <div className="skill-card" key={skill.name}>
-              <SkillIcon name={skill.name} />
-              <div className="skill-card-name">{skill.name}</div>
-              <div className="skill-card-pct">{skill.pct}%</div>
-            </div>
-          ))}
+          {SKILLS.map((skill) => {
+            const accent = BRAND_ACCENT[skill.name] || "61,127,255";
+            return (
+              <div
+                className="skill-card"
+                key={skill.name}
+                style={{ "--accent": accent }}
+              >
+                <SkillIcon name={skill.name} />
+                <div className="skill-card-name">{skill.name}</div>
+                <div className="skill-card-pct">{skill.pct}%</div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
   );
 }
-
