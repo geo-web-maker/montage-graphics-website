@@ -30,7 +30,7 @@ export default function About() {
         </div>
       </div>
       <div className="about-visual">
-        <div className="frame" />
+         <div className="frame" style={{backgroundImage: 'url(/about-adjusted.webp)', backgroundSize: 'cover'}}/>
         <div className="chips">
           {CHIP_TOOLS.map((tool) => (
             <div
