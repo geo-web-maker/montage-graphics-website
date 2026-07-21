@@ -10,6 +10,8 @@ Drop your logo files into this folder using these exact filenames:
 | Cinema 4D     | cinema-4d.svg       |
 | Figma         | figma.svg           |
 | Canva         | canva.svg           |
+| Blender       | blender.svg         |
+
 
 Notes:
 
