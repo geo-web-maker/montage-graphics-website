@@ -90,6 +90,7 @@
 .admin-shell input[type="text"],
 .admin-shell input[type="password"],
 .admin-shell input:not([type]),
+.admin-shell textarea,
 .admin-shell select {
   background: var(--bg);
   border: 1px solid var(--line);
