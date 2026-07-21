@@ -1,15 +1,25 @@
-import React from "react";
-import { REVIEWS } from "../data";
+import React, { useEffect, useState } from "react";
+import { getReviews } from "../api/client";
 
 export default function Reviews() {
+  const [reviews, setReviews] = useState([]);
+
+  useEffect(() => {
+    getReviews()
+      .then(setReviews)
+      .catch((err) => console.error("Failed to load reviews:", err));
+  }, []);
+
+  if (reviews.length === 0) return null;
+
   return (
     <section className="reviews" id="reviews">
       <div className="work-head">
         <h2>Client feedback</h2>
       </div>
       <div className="review-grid">
-        {REVIEWS.map((review, i) => (
-          <div className="review-card" key={i}>
+        {reviews.map((review) => (
+          <div className="review-card" key={review.id}>
             <span className="mark">&#8220;</span>
             <p>{review.quote}</p>
             <div className="who">
