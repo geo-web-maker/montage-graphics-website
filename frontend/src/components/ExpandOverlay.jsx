@@ -1,12 +1,18 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { getClientWork } from "../api/client";
 
-// Must match the grid-auto-rows / gap values in montage.css's .expand-grid.
-const ROW_UNIT = 6;
+// Kept intentionally tiny: rowSpan always rounds UP to the nearest whole
+// row (see recomputeSpans), so a coarse unit here means the rendered box
+// can end up noticeably taller than the image needs — which, now that the
+// image is object-fit:contain, shows up as a visible empty strip inside
+// the tile instead of being silently cropped away like it used to be.
+const ROW_UNIT = 2;
 const GAP = 14;
-// Aspect ratio (width/height) at or above which a tile is wide enough to
-// deserve 2 grid columns instead of being squeezed into one.
-const WIDE_RATIO = 1.6;
+// The aspect ratio a single grid column is roughly built for. Dividing an
+// image's real ratio by this gives how many columns it needs to occupy to
+// keep its box roughly that same "normal" shape — a 3:1 banner needs about
+// 3x the columns a ~1:1 photo does, not a flat 1-or-2 cap.
+const BASE_TILE_RATIO = 1.2;
 
 export default function ExpandOverlay({
   expanded,
@@ -55,7 +61,7 @@ export default function ExpandOverlay({
         // cap — a 3:1 banner needs roughly twice the columns a 1.6:1 image
         // does, or the box ends up too tall for the image and object-fit
         // crops the sides to compensate.
-        const colSpan = Math.min(cols, Math.max(1, Math.round(ratio / WIDE_RATIO)));
+        const colSpan = Math.min(cols, Math.max(1, Math.round(ratio / BASE_TILE_RATIO)));
         const widthPx = colSpan * colWidth + (colSpan - 1) * GAP;
         const heightPx = widthPx / ratio;
         const rowSpan = Math.max(1, Math.ceil((heightPx + GAP) / (ROW_UNIT + GAP)));
