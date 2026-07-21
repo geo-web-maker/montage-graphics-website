@@ -74,9 +74,6 @@ export default function Skills() {
             opportunity to combine creativity, technical precision, and
             strategic vision to achieve real digital results.
           </p>
-          <a className="cta" href="#contact">
-            Get in touch
-          </a>
         </div>
 
         <div className="skills-grid">
