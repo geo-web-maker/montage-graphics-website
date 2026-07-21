@@ -226,11 +226,8 @@
 /* Skills */
 .montage-root .skills{padding:70px 6vw 80px; border-top:1px solid var(--line);}
 .montage-root .skills-inner{
-  display:grid; grid-template-columns:1fr 1.15fr; gap:50px; align-items:center;
-  border-radius:16px; padding:48px;
-  background:linear-gradient(160deg,#20242c,#141518);
-  border:1px solid var(--line);
-}
+   display:grid; grid-template-columns:1fr 1.15fr; gap:50px; align-items:center;
+ }
 .montage-root .skills-copy p{color:var(--ink-dim); font-size:15px; line-height:1.7; max-width:440px; margin-bottom:28px;}
 
 .montage-root .skills-grid{
@@ -294,7 +291,7 @@
 .montage-root footer{padding:30px 6vw 50px; border-top:1px solid var(--line); font-size:12px; color:var(--ink-dim); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
 
 @media (max-width:900px){
-  .montage-root .skills-inner{grid-template-columns:1fr; gap:36px; padding:36px;}
+  .montage-root .skills-inner{grid-template-columns:1fr; gap:36px;}
 }
 
 @media (max-width:760px){
@@ -315,7 +312,7 @@
   .montage-root .about-visual{order:-1;}
   .montage-root .about-visual .frame{height:220px;}
   .montage-root .skills{padding:50px 5vw 60px;}
-  .montage-root .skills-inner{grid-template-columns:1fr; padding:28px 20px; gap:32px;}
+  .montage-root .skills-inner{grid-template-columns:1fr; gap:32px;}
   .montage-root .skills-grid{grid-template-columns:repeat(2,1fr);}
   .montage-root .platforms{padding:0 5vw 60px;}
   .montage-root .reviews{padding:0 5vw 60px;}
