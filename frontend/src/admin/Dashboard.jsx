@@ -1,20 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { getClients } from "../api/client";
+import { getAllReviews, getClients } from "../api/client";
 import ClientForm from "./ClientForm";
 import WorkImageForm from "./WorkImageForm";
 import ClientList from "./ClientList";
+import ReviewsAdmin from "./ReviewsAdmin";
 
 export default function Dashboard({ token, onLogout }) {
   const [clients, setClients] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    getClients()
-      .then(setClients)
+    Promise.all([getClients(), getAllReviews(token)])
+      .then(([clientsData, reviewsData]) => {
+        setClients(clientsData);
+        setReviews(reviewsData);
+      })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
-  }, []);
+  }, [token]);
 
   return (
     <div className="admin-shell">
@@ -50,6 +55,18 @@ export default function Dashboard({ token, onLogout }) {
             token={token}
             clients={clients}
             onDeleted={(id) => setClients((prev) => prev.filter((c) => c.id !== id))}
+          />
+        )}
+
+        <div className="admin-section-label">Reviews</div>
+        {loading ? (
+          <p className="admin-empty">Loading...</p>
+        ) : (
+          <ReviewsAdmin
+            token={token}
+            reviews={reviews}
+            onCreated={(r) => setReviews((prev) => [...prev, r])}
+            onDeleted={(id) => setReviews((prev) => prev.filter((r) => r.id !== id))}
           />
         )}
       </main>
