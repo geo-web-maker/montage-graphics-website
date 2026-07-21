@@ -1,18 +1,54 @@
 import { getUploadSignature } from "../api/client";
 
-// The file never touches our FastAPI server — we only ask it for a signed
-// signature, then POST the file straight to Cloudinary's own endpoint.
-//
+// Cloudinary's free-tier plan rejects any file over 10MB before it even
+// reaches our signed-upload flow. Camera/screenshot PNGs routinely blow
+// past that (15MB+ isn't unusual), so work images get downscaled and
+// re-encoded as JPEG in the browser first. Logos are exempt — they need
+// to stay PNG so transparency survives for the color-tint feature, and
+// logos are small enough in practice that this has never been an issue.
+const MAX_DIMENSION = 2000; // px, longest edge
+const JPEG_QUALITY = 0.85;
+const COMPRESS_THRESHOLD_BYTES = 2 * 1024 * 1024; // skip work already small enough
+
+async function compressImage(file) {
+  if (file.size <= COMPRESS_THRESHOLD_BYTES) return file;
+
+  try {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, MAX_DIMENSION / Math.max(bitmap.width, bitmap.height));
+    const width = Math.round(bitmap.width * scale);
+    const height = Math.round(bitmap.height * scale);
+
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    canvas.getContext("2d").drawImage(bitmap, 0, 0, width, height);
+
+    const blob = await new Promise((resolve) =>
+      canvas.toBlob(resolve, "image/jpeg", JPEG_QUALITY)
+    );
+    if (!blob) return file;
+
+    const newName = file.name.replace(/\.\w+$/, "") + ".jpg";
+    return new File([blob], newName, { type: "image/jpeg" });
+  } catch {
+    return file;
+  }
+}
+
 // forLogo=true also requests Cloudinary's color analysis, so the response
 // includes a `colors` array we can pull a dominant hex from — used for the
 // client logo's background-tint effect. Regular work-image uploads don't
 // need this, so it stays off by default.
+
 export async function uploadToCloudinary(token, file, { forLogo = false } = {}) {
+  const uploadFile = forLogo ? file : await compressImage(file);
+  
   const { timestamp, signature, api_key, cloud_name, folder, colors } =
     await getUploadSignature(token, { forLogo });
 
   const formData = new FormData();
-  formData.append("file", file);
+  formData.append("file", uploadFile);
   formData.append("api_key", api_key);
   formData.append("timestamp", timestamp);
   formData.append("signature", signature);
