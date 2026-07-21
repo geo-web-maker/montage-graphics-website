@@ -36,3 +36,4 @@ async def ensure_indexes() -> None:
     await db.clients.create_index("trusted_by_order")
     await db.work_images.create_index("client_id")
     await db.work_images.create_index([("client_id", 1), ("display_order", 1)])
+    await db.reviews.create_index("display_order")
