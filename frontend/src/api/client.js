@@ -35,6 +35,10 @@ export function getClientWork(slug) {
   return request(`/clients/${slug}/work`);
 }
 
+export function getReviews() {
+  return request("/reviews");
+}
+
 // ---- Auth ----
 
 export function login(username, password) {
@@ -63,6 +67,24 @@ export function addWorkImage(token, clientId, payload) {
 
 export function deleteWorkImage(token, workImageId) {
   return request(`/admin/work/${workImageId}`, { method: "DELETE", token });
+}
+
+// ---- Admin: reviews ----
+
+export function getAllReviews(token) {
+  return request("/admin/reviews", { token });
+}
+
+export function createReview(token, payload) {
+  return request("/admin/reviews", { method: "POST", body: payload, token });
+}
+
+export function updateReview(token, reviewId, payload) {
+  return request(`/admin/reviews/${reviewId}`, { method: "PATCH", body: payload, token });
+}
+
+export function deleteReview(token, reviewId) {
+  return request(`/admin/reviews/${reviewId}`, { method: "DELETE", token });
 }
 
 // ---- Admin: upload ----
