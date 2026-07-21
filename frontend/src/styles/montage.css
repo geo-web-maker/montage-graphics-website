@@ -214,35 +214,46 @@
   background:linear-gradient(160deg,#20242c,#141518); margin-bottom:16px;
 }
 .montage-root .chips{display:flex; flex-wrap:wrap; gap:10px;}
-.montage-root .chip{border:1px solid var(--line); border-radius:999px; padding:7px 14px; font-size:12px; color:var(--ink-dim);}
+.montage-root .chip{
+  --accent: 61,127,255; /* fallback, overridden per-chip */
+  border:1px solid rgba(var(--accent),0.35); border-radius:999px; padding:7px 14px;
+  font-size:12px; color:var(--ink);
+  background:rgba(var(--accent),0.1);
+  transition:background .15s ease, border-color .15s ease;
+}
+.montage-root .chip:hover{background:rgba(var(--accent),0.18); border-color:rgba(var(--accent),0.55);}
 
 /* Skills */
 .montage-root .skills{padding:70px 6vw 80px; border-top:1px solid var(--line);}
 .montage-root .skills-inner{
   display:grid; grid-template-columns:1fr 1.15fr; gap:50px; align-items:center;
-  border-radius:16px; padding:48px; position:relative; overflow:hidden;
-  background:
-    radial-gradient(560px 420px at 8% 15%, rgba(27,158,134,0.28), transparent 70%),
-    linear-gradient(160deg,#161a17,#101112);
+  border-radius:16px; padding:48px;
+  background:linear-gradient(160deg,#20242c,#141518);
   border:1px solid var(--line);
 }
 .montage-root .skills-copy p{color:var(--ink-dim); font-size:15px; line-height:1.7; max-width:440px; margin-bottom:28px;}
-.montage-root .skills-copy .section-title b{color:var(--teal);}
-.montage-root .skills-cta{
-  display:inline-block; text-decoration:none; background:var(--teal); color:#08211c;
-  font-weight:600; border:none;
-}
-.montage-root .skills-cta:hover{background:#22b89b;}
 
 .montage-root .skills-grid{
   display:grid; grid-template-columns:repeat(3,1fr); gap:16px;
 }
+/* Liquid glass, same recipe as the header CTA / expand-close button —
+   just tinted per-card via --accent (each skill's own real brand color,
+   set inline in Skills.jsx) instead of one shared color. */
 .montage-root .skill-card{
-  background:rgba(20,22,20,0.55); border:1px solid var(--line); border-radius:12px;
-  padding:20px 16px; text-align:center; backdrop-filter:blur(6px);
-  transition:transform .18s ease, border-color .18s ease;
+  --accent: 61,127,255; /* fallback, overridden per-card */
+  background:rgba(var(--accent),0.08);
+  border:1px solid rgba(var(--accent),0.28);
+  border-radius:12px; padding:20px 16px; text-align:center;
+  backdrop-filter:blur(14px) saturate(180%);
+  -webkit-backdrop-filter:blur(14px) saturate(180%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.12), 0 4px 16px rgba(0,0,0,0.25);
+  transition:transform .18s ease, border-color .18s ease, background .18s ease;
 }
-.montage-root .skill-card:hover{transform:translateY(-3px); border-color:rgba(27,158,134,0.5);}
+.montage-root .skill-card:hover{
+  transform:translateY(-3px);
+  background:rgba(var(--accent),0.14);
+  border-color:rgba(var(--accent),0.5);
+}
 .montage-root .skill-icon{
   width:52px; height:52px; border-radius:12px; margin:0 auto 14px;
   display:flex; align-items:center; justify-content:center;
