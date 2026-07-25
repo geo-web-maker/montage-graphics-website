@@ -1,7 +1,5 @@
 import React from "react";
-import { CONTACT, BRAND_ACCENT } from "../data";
-
-const CHIP_TOOLS = ["Photoshop", "Illustrator", "After Effects", "Cinema 4D", "Figma", "Blender"];
+import { CONTACT } from "../data";
 
 export default function About() {
   return (
@@ -32,18 +30,7 @@ export default function About() {
         </div>
       </div>
       <div className="about-visual">
-         <div className="frame" style={{backgroundImage: 'url(/about-adjusted.webp)', backgroundSize: 'cover'}}/>
-        <div className="chips">
-          {CHIP_TOOLS.map((tool) => (
-            <div
-              className="chip"
-              key={tool}
-              style={{ "--accent": BRAND_ACCENT[tool] || "61,127,255" }}
-            >
-              {tool}
-            </div>
-          ))}
-        </div>
+        <div className="frame" style={{ backgroundImage: "url(/about-adjusted.webp)", backgroundSize: "cover" }} />
       </div>
     </section>
   );
