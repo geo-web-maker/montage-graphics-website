@@ -16,13 +16,17 @@ export default function TrustedByReel() {
 
   return (
     <div className="reel">
-      <div className="reel-label">Trusted by</div>
+      <div className="reel-label">
+        <span className="coord">COL 01–12 / CREDENTIALS</span>
+        <span className="label">Trusted by</span>
+      </div>
       <div className="reel-viewport">
         <div className="reel-track">
           {items.map((client, i) => (
-            <span key={`${client.id}-${i}`}>
-              <img src={client.logo_url} alt={client.name} />
-            </span>
+            <React.Fragment key={`${client.id}-${i}`}>
+              <span className="name">{client.name}</span>
+              <span className="dot">◆</span>
+            </React.Fragment>
           ))}
         </div>
       </div>

@@ -34,8 +34,8 @@ export default function ExpandOverlay({
       setSpans({});
       return;
     }
-    // expanded.client is the client's slug (see WorkCarousel's onCardOpen).
-    getClientWork(expanded.client)
+    // expanded.client is the full client object (see WorkCarousel's onCardOpen).
+    getClientWork(expanded.client.slug)
       .then(setWork)
       .catch((err) => console.error("Failed to load work images:", err));
   }, [expanded]);
@@ -105,23 +105,36 @@ export default function ExpandOverlay({
           style={overlayStyle}
           onTransitionEnd={onTransitionEnd}
         >
-          <div className={`expand-grid${gridVisible ? " visible" : ""}`} ref={gridRef}>
-            {work.map((img) => {
-              const span = spans[img.id];
-              const style = span
-                ? { "--row-span": span.rowSpan, "--col-span": span.colSpan }
-                : undefined;
-              return (
-                <div className={`tile${span ? " measured" : ""}`} key={img.id} style={style}>
-                  <img
-                    src={img.image_url}
-                    alt={img.caption || ""}
-                    onLoad={(e) => handleImgLoad(img.id, e)}
-                  />
-                  {img.caption && <span className="tile-caption">{img.caption}</span>}
+          <div className={`expand-inner${gridVisible ? " visible" : ""}`}>
+            {expanded && (
+              <div className="modal-head">
+                <div className="label coord">
+                  COL 01–12 / {expanded.client.name.toUpperCase()}
                 </div>
-              );
-            })}
+                <h3>{expanded.client.name}</h3>
+                <div className="sub">
+                  {work.length} {work.length === 1 ? "piece" : "pieces"}
+                </div>
+              </div>
+            )}
+            <div className="expand-grid" ref={gridRef}>
+              {work.map((img) => {
+                const span = spans[img.id];
+                const style = span
+                  ? { "--row-span": span.rowSpan, "--col-span": span.colSpan }
+                  : undefined;
+                return (
+                  <div className={`tile${span ? " measured" : ""}`} key={img.id} style={style}>
+                    <img
+                      src={img.image_url}
+                      alt={img.caption || ""}
+                      onLoad={(e) => handleImgLoad(img.id, e)}
+                    />
+                    {img.caption && <span className="tile-caption">{img.caption}</span>}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       )}

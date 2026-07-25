@@ -7,7 +7,9 @@ export default function About() {
   return (
     <section className="about" id="contact">
       <div className="about-copy">
-        <div className="eyebrow">About me</div>
+        <div className="label" style={{ marginBottom: 16 }}>
+          Exhibit 03 — Curator's Note
+        </div>
         <h2 className="section-title">
           Professional solutions for <b>design challenges.</b>
         </h2>

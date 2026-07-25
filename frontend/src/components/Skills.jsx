@@ -66,8 +66,9 @@ export default function Skills() {
     <section className="skills" id="skills">
       <div className="skills-inner">
         <div className="skills-copy">
+          <div className="label">Exhibit 04</div>
           <h2 className="section-title">
-            Skills &amp; <b>Expertise</b>
+            Medium &amp; <b>Mastery</b>
           </h2>
           <p>
             Popular skills and experiences, where each project is an
@@ -87,7 +88,10 @@ export default function Skills() {
               >
                 <SkillIcon name={skill.name} />
                 <div className="skill-card-name">{skill.name}</div>
-                <div className="skill-card-pct">{skill.pct}%</div>
+                <div className="bar">
+                  <span style={{ width: `${skill.pct}%` }} />
+                </div>
+                <div className="skill-card-pct">{skill.pct}% mastery</div>
               </div>
             );
           })}

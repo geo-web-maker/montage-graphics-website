@@ -44,14 +44,19 @@ export function useExpandCard() {
     setExpanded(null);
   }, []);
 
+  const background = expanded
+    ? `linear-gradient(160deg, ${expanded.client.logo_dominant_color}dd, ${expanded.client.logo_dominant_color}55 55%, #141518 100%)`
+    : undefined;
+
   const overlayStyle = expanded
     ? filled
-      ? { top: 0, left: 0, width: "100vw", height: "100vh" }
+      ? { top: 0, left: 0, width: "100vw", height: "100vh", background }
       : {
           top: expanded.top,
           left: expanded.left,
           width: expanded.width,
           height: expanded.height,
+          background,
         }
     : null;
 
