@@ -91,6 +91,7 @@ export default function ExpandOverlay({
 
   return (
     <>
+      <div className={`expand-scrim${expanded ? " visible" : ""}`} />
       <button
         className={`expand-close${gridVisible ? " visible" : ""}`}
         aria-label="Close"

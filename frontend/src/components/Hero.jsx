@@ -21,20 +21,6 @@ export default function Hero() {
             </a>
           </div>
         </div>
-        <div className="hero-visual">
-          <div className="frame-exhibit">
-            <div
-              className="portrait"
-              style={{ backgroundImage: "url(/hero.jpeg)" }}
-            />
-            <div className="wall-label">
-              <span>Self-portrait, studio light</span>
-              <span>
-                <b>200</b> shipped · <b>5</b> years · <b>90%</b> satisfaction
-              </span>
-            </div>
-          </div>
-        </div>
       </section>
 
       <div className="stats-row">
