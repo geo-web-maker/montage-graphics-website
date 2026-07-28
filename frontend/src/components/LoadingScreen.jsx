@@ -65,7 +65,7 @@ export default function LoadingScreen({ ready }) {
   return (
     <div className={`loader-screen${phase === "out" ? " loader-out" : ""}`}>
       <img
-        src="/logo header.png"
+        src="/logo loader.png"
         alt=""
         className="loader-mark"
         draggable={false}
