@@ -65,7 +65,7 @@ export default function Skills() {
   return (
     <section className="skills" id="skills">
       <div className="skills-inner">
-        <div className="skills-copy">
+        <div className="skills-copy reveal">
           <div className="label">Exhibit 04</div>
           <h2 className="section-title">
             Medium &amp; <b>Mastery</b>
@@ -77,7 +77,7 @@ export default function Skills() {
           </p>
         </div>
 
-        <div className="skills-grid">
+        <div className="skills-grid reveal" data-reveal-delay="100">
           {SKILLS.map((skill) => {
             const accent = BRAND_ACCENT[skill.name] || "61,127,255";
             return (

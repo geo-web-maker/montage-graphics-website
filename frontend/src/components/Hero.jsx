@@ -1,4 +1,5 @@
 import React from "react";
+import SplitFlapWord from "./SplitFlapWord";
 
 export default function Hero() {
   return (
@@ -7,7 +8,7 @@ export default function Hero() {
         <div className="hero-copy">
           <div className="eyebrow">Graphic &amp; Motion Designer, Kampala</div>
           <h1 className="display">
-            Brands that <span>move</span> people.
+            Brands that <SplitFlapWord /> people.
           </h1>
           <p>
             Montage Graphics designs flyers, social kits, brand identities and

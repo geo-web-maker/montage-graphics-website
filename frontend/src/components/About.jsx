@@ -4,7 +4,7 @@ import { CONTACT } from "../data";
 export default function About() {
   return (
     <section className="about" id="contact">
-      <div className="about-copy">
+      <div className="about-copy reveal">
         <div className="label" style={{ marginBottom: 16 }}>
           Exhibit 03 — Curator's Note
         </div>
@@ -29,7 +29,7 @@ export default function About() {
           </div>
         </div>
       </div>
-      <div className="about-visual">
+      <div className="about-visual reveal" data-reveal-delay="120">
         <div className="frame" style={{ backgroundImage: "url(/about-adjusted.webp)", backgroundSize: "cover" }} />
       </div>
     </section>

@@ -4,7 +4,31 @@
    this design (shadowed under .montage-root) and intentionally do NOT
    touch styles/tokens.css, which is shared with the admin panel. */
 
-@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,300;0,400;0,500;1,400;1,500&family=EB+Garamond:wght@400;500;600&family=Archivo:wght@600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,300;0,400;0,500;1,400;1,500&family=EB+Garamond:wght@400;500;600&family=Archivo:wght@600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,500&display=swap');
+
+/* Loading screen — favicon mark scales/fades in, holds briefly, then
+   cross-fades away as the hero is revealed underneath. First-visit
+   only (see LoadingScreen.jsx sessionStorage flag). */
+.loader-screen{
+  position:fixed; inset:0; z-index:200;
+  background:#F7F6F2;
+  display:flex; align-items:center; justify-content:center;
+  opacity:1; transition:opacity 0.5s ease;
+}
+.loader-screen.loader-out{opacity:0; pointer-events:none;}
+.loader-mark{
+  width:64px; height:auto;
+  opacity:0;
+  animation:loader-mark-in 0.6s ease forwards;
+}
+@keyframes loader-mark-in{
+  from{opacity:0; transform:scale(0.85);}
+  to{opacity:1; transform:scale(1);}
+}
+@media (prefers-reduced-motion: reduce){
+  .loader-screen{transition:opacity 0.3s ease;}
+  .loader-mark{animation:none; opacity:1; transform:none;}
+}
 
 .montage-root{
   --paper:#F7F6F2;
@@ -21,11 +45,23 @@
   overflow-x:hidden;
 }
 .montage-root *{box-sizing:border-box;}
+
+/* Scroll reveals — one-shot fade + slide-up, triggered via
+   IntersectionObserver in useReveal.js. Kept subtle to match the
+   paper/exhibition tone: no bounce, 14px of travel. */
+.montage-root .reveal{
+  opacity:0; transform:translateY(14px);
+  transition:opacity 0.6s ease, transform 0.6s ease;
+}
+.montage-root .reveal.revealed{opacity:1; transform:translateY(0);}
+@media (prefers-reduced-motion: reduce){
+  .montage-root .reveal{opacity:1; transform:none; transition:none;}
+}
 .montage-root ::selection{background:var(--forest); color:var(--paper);}
 .montage-root h1,
 .montage-root h2,
 .montage-root h3{font-family:'Newsreader', serif; font-weight:400; margin:0;}
-.montage-root .display{font-family:'Newsreader',serif; font-weight:400; letter-spacing:normal;}
+.montage-root .display{font-family:'Fraunces',serif; font-weight:400; letter-spacing:normal; font-optical-sizing:auto;}
 
 .montage-root .label{font-family:'EB Garamond',serif; font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:var(--ink-soft);}
 .montage-root .label b{color:var(--forest); font-weight:600;}
@@ -59,6 +95,48 @@
 .montage-root .eyebrow{font-family:'EB Garamond',serif; font-size:12px; letter-spacing:0.16em; color:var(--ink-soft); text-transform:uppercase; margin-bottom:26px;}
 .montage-root .hero-copy h1{font-size:clamp(44px,7vw,92px); line-height:1.05; font-weight:400;}
 .montage-root .hero-copy h1 span{font-style:italic; color:var(--forest);}
+
+/* Split-flap cycling word — ties into the exhibit/coordinate motif
+   (COL/PLATE labels) with a departure-board flip on a single word. */
+.montage-root .split-flap{
+  display:inline-block; position:relative;
+  font-style:italic; color:var(--forest);
+  perspective:240px;
+}
+.montage-root .split-flap-panel{
+  display:inline-block; position:relative;
+}
+.montage-root .split-flap-face{
+  display:inline-block; backface-visibility:hidden;
+}
+.montage-root .split-flap-next{
+  position:absolute; left:0; top:0;
+  transform:rotateX(90deg);
+  transform-origin:50% 100%;
+}
+.montage-root .split-flap-current{
+  transform:rotateX(0deg);
+  transform-origin:50% 100%;
+  transition:transform 0.42s cubic-bezier(.5,0,.4,1), opacity 0.3s ease;
+}
+.montage-root .split-flap-panel.flipping .split-flap-current{
+  transform:rotateX(-90deg);
+  opacity:0.4;
+}
+.montage-root .split-flap-panel.flipping .split-flap-next{
+  transform:rotateX(0deg);
+  transition:transform 0.42s cubic-bezier(.5,0,.4,1) 0.08s;
+}
+.montage-root .sr-only{
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+}
+@media (prefers-reduced-motion: reduce){
+  .montage-root .split-flap-panel,
+  .montage-root .split-flap-current,
+  .montage-root .split-flap-next{transition:none !important; transform:none !important;}
+  .montage-root .split-flap-next{display:none;}
+}
 .montage-root .hero-copy p{font-size:19px; color:var(--ink-soft); line-height:1.7; max-width:56ch; margin:28px auto 0;}
 .montage-root .hero-copy .btns{display:flex; gap:16px; justify-content:center; margin-top:36px; align-items:center;}
 .montage-root .ghost-link{
@@ -129,8 +207,11 @@
 .montage-root .wc-viewport{overflow:hidden; width:100%;}
 .montage-root .wc-track{display:flex; gap:28px; width:max-content; padding:0 56px; animation:montage-wcScrollX 34s linear infinite;}
 .montage-root .wc-viewport:hover .wc-track,
-.montage-root .wc-viewport:focus-within .wc-track{animation-play-state:paused;}
+.montage-root .wc-viewport:focus-within .wc-track,
+.montage-root .wc-viewport.touched .wc-track{animation-play-state:paused;}
 @keyframes montage-wcScrollX{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
+
+.montage-root .scroll-note.mobile-only{display:none;}
 
 .montage-root .wc-card{
   flex:0 0 320px; width:320px; cursor:pointer; background:var(--paper);
@@ -141,7 +222,19 @@
 .montage-root .wc-card .plate{
   height:230px; width:100%; position:relative; border:1px solid var(--line-strong);
   display:flex; align-items:center; justify-content:center; overflow:hidden;
-  /* background is set inline per-card from that client's logo_dominant_color */
+  /* background is set inline per-card: flat color-mix(logo_dominant_color, #141518) */
+  box-shadow:0 18px 34px -18px rgba(28,28,26,0.35), 0 2px 6px rgba(28,28,26,0.08);
+  transition:transform 200ms ease, box-shadow 200ms ease;
+}
+.montage-root .wc-card:hover .plate,
+.montage-root .wc-card:focus-visible .plate{
+  transform:translateY(-3px);
+  box-shadow:0 22px 40px -18px rgba(28,28,26,0.4), 0 3px 8px rgba(28,28,26,0.1);
+}
+@media (prefers-reduced-motion: reduce){
+  .montage-root .wc-card .plate{transition:none;}
+  .montage-root .wc-card:hover .plate,
+  .montage-root .wc-card:focus-visible .plate{transform:none;}
 }
 .montage-root .wc-card .coord{position:absolute; top:10px; left:10px; background:var(--paper); padding:2px 8px;}
 .montage-root .wc-logo{max-width:52%; max-height:48%; object-fit:contain; opacity:0.95;}
@@ -378,8 +471,30 @@
   .montage-root .reel-label,
   .montage-root .work-head{padding-left:22px; padding-right:22px;}
   .montage-root .reel-track{padding-left:22px;}
-  .montage-root .wc-track{padding:0 22px;}
   .montage-root .work{padding:60px 0 70px;}
   .montage-root .review-ticker-outer{margin:0 -22px;}
   .montage-root .review-ticker-track{padding:0 22px;}
+
+  /* Mobile: vertical stack, still auto-scrolling — a translateY marquee
+     replaces the desktop horizontal translateX reel. Paused on
+     touch/focus (see .wc-viewport.touched in WorkCarousel.jsx) since
+     mobile has no hover state to rely on. */
+  .montage-root .wc-viewport{
+    height:70vh; max-height:680px; min-height:420px; overflow:hidden; width:100%;
+    -webkit-mask-image:linear-gradient(to bottom, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
+    mask-image:linear-gradient(to bottom, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
+  }
+  .montage-root .wc-track{
+    display:flex; flex-direction:column; align-items:center;
+    gap:22px; width:100%; padding:22px 22px;
+    animation-name:montage-wcScrollY; animation-duration:26s;
+  }
+  @keyframes montage-wcScrollY{ from{transform:translateY(0);} to{transform:translateY(-50%);} }
+  .montage-root .wc-card{width:min(86vw, 340px); flex:0 0 auto;}
+  .montage-root .scroll-note.desktop-only{display:none;}
+  .montage-root .scroll-note.mobile-only{display:block;}
+}
+
+@media (prefers-reduced-motion: reduce){
+  .montage-root .wc-track{animation:none !important;}
 }

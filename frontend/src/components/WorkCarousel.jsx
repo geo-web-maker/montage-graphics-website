@@ -3,6 +3,7 @@ import { getClients } from "../api/client";
 
 export default function WorkCarousel({ onCardOpen }) {
   const [clients, setClients] = useState([]);
+  const [touched, setTouched] = useState(false);
 
   useEffect(() => {
     getClients()
@@ -20,7 +21,7 @@ export default function WorkCarousel({ onCardOpen }) {
         ))}
       </div>
       <div className="work-inner">
-        <div className="work-head">
+        <div className="work-head reveal">
           <div>
             <div className="label" style={{ marginBottom: 14 }}>
               Exhibit 02
@@ -29,11 +30,16 @@ export default function WorkCarousel({ onCardOpen }) {
           </div>
           <span className="hint">Tap a plate to open the full set</span>
         </div>
-        <div className="wc-viewport">
+        <div
+          className={`wc-viewport${touched ? " touched" : ""}`}
+          onTouchStart={() => setTouched(true)}
+          onTouchEnd={() => setTouched(false)}
+        >
           <div className="wc-track">
             {items.map((card, i) => (
               <div
-                className="wc-card"
+                className="wc-card reveal"
+                data-reveal-delay={(i % 8) * 60}
                 tabIndex={0}
                 key={`${card.id}-${i}`}
                 onClick={(e) => onCardOpen(e, card)}
@@ -44,7 +50,7 @@ export default function WorkCarousel({ onCardOpen }) {
                 <div
                   className="plate"
                   style={{
-                    background: `linear-gradient(160deg, ${card.logo_dominant_color}dd, ${card.logo_dominant_color}55 55%, #141518 100%)`,
+                    background: `color-mix(in srgb, ${card.logo_dominant_color} 45%, #141518)`,
                   }}
                 >
                   <span className="coord">
@@ -62,7 +68,8 @@ export default function WorkCarousel({ onCardOpen }) {
             ))}
           </div>
         </div>
-        <div className="scroll-note">Auto-scrolling — hover to pause</div>
+        <div className="scroll-note desktop-only">Auto-scrolling — hover to pause</div>
+        <div className="scroll-note mobile-only">Auto-scrolling — tap to pause</div>
       </div>
     </div>
   );

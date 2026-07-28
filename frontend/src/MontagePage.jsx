@@ -1,6 +1,7 @@
 import React from "react";
 import "./styles/montage.css";
 
+import LoadingScreen from "./components/LoadingScreen";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
 import TrustedByReel from "./components/TrustedByReel";
@@ -12,6 +13,7 @@ import Platforms from "./components/Platforms";
 import Reviews from "./components/Reviews";
 import Footer from "./components/Footer";
 import { useExpandCard } from "./hooks/useExpandCard";
+import { useReveal } from "./hooks/useReveal";
 
 export default function MontagePage() {
   const {
@@ -24,8 +26,11 @@ export default function MontagePage() {
     handleTransitionEnd,
   } = useExpandCard();
 
+  useReveal();
+
   return (
     <div className="montage-root">
+      <LoadingScreen />
       <Header />
       <Hero />
       <TrustedByReel />
