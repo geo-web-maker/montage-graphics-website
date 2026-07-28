@@ -1,12 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 
-const WORDS = ["move", "remember", "follow", "choose", "trust"];
+// Kept close in length on purpose — the old ("move" vs "remember")
+// pairing forced a wide fixed box and a visible width jump. This set
+// only varies from 4-6 characters, so the crossfade barely shifts
+// the line width at all.
+const WORDS = ["move", "follow", "trust", "guide", "linger"];
 const CYCLE_MS = 2600;
-const FLIP_MS = 500;
+const FADE_MS = 420;
 
 export default function SplitFlapWord() {
   const [index, setIndex] = useState(0);
-  const [flipping, setFlipping] = useState(false);
+  const [fading, setFading] = useState(false);
   const [paused, setPaused] = useState(false);
   const pausedRef = useRef(paused);
   pausedRef.current = paused;
@@ -19,18 +23,17 @@ export default function SplitFlapWord() {
 
     const interval = setInterval(() => {
       if (pausedRef.current) return;
-      setFlipping(true);
+      setFading(true);
       setTimeout(() => {
         setIndex((i) => (i + 1) % WORDS.length);
-        setFlipping(false);
-      }, FLIP_MS);
+        setFading(false);
+      }, FADE_MS);
     }, CYCLE_MS);
 
     return () => clearInterval(interval);
   }, []);
 
   const current = WORDS[index];
-  const next = WORDS[(index + 1) % WORDS.length];
 
   return (
     <span
@@ -40,9 +43,14 @@ export default function SplitFlapWord() {
       aria-live="off"
     >
       <span className="sr-only">{current}</span>
-      <span className={`split-flap-panel${flipping ? " flipping" : ""}`} aria-hidden="true">
-        <span className="split-flap-face split-flap-current">{current}</span>
-        <span className="split-flap-face split-flap-next">{next}</span>
+      {/* Single element, simple opacity + translateY crossfade — no
+          second absolutely-positioned face, so there's nothing that
+          can misalign or leave a gap mid-transition. */}
+      <span
+        className={`split-flap-word${fading ? " split-flap-fading" : ""}`}
+        aria-hidden="true"
+      >
+        {current}
       </span>
     </span>
   );
