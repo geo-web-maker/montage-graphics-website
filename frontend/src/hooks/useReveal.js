@@ -16,25 +16,52 @@ export function useReveal(root) {
     if (reduced) return;
 
     const scope = root?.current || document;
-    const targets = scope.querySelectorAll(".reveal:not(.revealed)");
-    if (!targets.length) return;
 
-    const observer = new IntersectionObserver(
+    const io = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry, i) => {
+        entries.forEach((entry) => {
           if (entry.isIntersecting) {
             const el = entry.target;
             const delay = el.dataset.revealDelay || 0;
             el.style.transitionDelay = `${delay}ms`;
             el.classList.add("revealed");
-            observer.unobserve(el);
+            io.unobserve(el);
           }
         });
       },
       { threshold: 0.15, rootMargin: "0px 0px -40px 0px" }
     );
 
-    targets.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
+    const observe = (el) => io.observe(el);
+
+    // Elements present at mount time.
+    scope
+      .querySelectorAll(".reveal:not(.revealed)")
+      .forEach(observe);
+
+    // Elements added later (e.g. carousel cards that arrive after an
+    // async fetch resolves) — without this, anything not in the DOM
+    // on the first scan never gets observed and stays at opacity:0
+    // forever, which is exactly what made the carousel "vanish".
+    const mo = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        mutation.addedNodes.forEach((node) => {
+          if (node.nodeType !== 1) return;
+          if (node.matches?.(".reveal:not(.revealed)")) observe(node);
+          node
+            .querySelectorAll?.(".reveal:not(.revealed)")
+            .forEach(observe);
+        });
+      }
+    });
+    mo.observe(scope === document ? document.body : scope, {
+      childList: true,
+      subtree: true,
+    });
+
+    return () => {
+      io.disconnect();
+      mo.disconnect();
+    };
   }, [root]);
 }

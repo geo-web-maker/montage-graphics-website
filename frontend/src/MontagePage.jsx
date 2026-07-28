@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./styles/montage.css";
 
 import LoadingScreen from "./components/LoadingScreen";
@@ -14,6 +14,7 @@ import Reviews from "./components/Reviews";
 import Footer from "./components/Footer";
 import { useExpandCard } from "./hooks/useExpandCard";
 import { useReveal } from "./hooks/useReveal";
+import { getClients } from "./api/client";
 
 export default function MontagePage() {
   const {
@@ -28,13 +29,26 @@ export default function MontagePage() {
 
   useReveal();
 
+  // Lifted up from WorkCarousel so the loading screen's exit can be
+  // tied to the same fetch that fills the carousel — it now waits for
+  // `clientsReady` instead of leaving on a blind fixed timer.
+  const [clients, setClients] = useState([]);
+  const [clientsReady, setClientsReady] = useState(false);
+
+  useEffect(() => {
+    getClients()
+      .then(setClients)
+      .catch((err) => console.error(err))
+      .finally(() => setClientsReady(true));
+  }, []);
+
   return (
     <div className="montage-root">
-      <LoadingScreen />
+      <LoadingScreen ready={clientsReady} />
       <Header />
       <Hero />
       <TrustedByReel />
-      <WorkCarousel onCardOpen={openExpand} />
+      <WorkCarousel clients={clients} onCardOpen={openExpand} />
       <ExpandOverlay
         expanded={expanded}
         filled={filled}

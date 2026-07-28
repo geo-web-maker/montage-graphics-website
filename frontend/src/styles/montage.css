@@ -67,26 +67,27 @@
 .montage-root .label b{color:var(--forest); font-weight:600;}
 .montage-root .coord{font-family:'Archivo',sans-serif; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--red); font-weight:700;}
 
-/* Header */
+/* Header — darkened so the logo (grayscale, made for a dark ground)
+   actually reads against it, instead of near-vanishing on light paper. */
 .montage-root header{
   display:flex; justify-content:space-between; align-items:center;
   padding:28px 56px; border-bottom:1px solid var(--ink);
-  position:sticky; top:0; background:var(--paper); z-index:10;
+  position:sticky; top:0; background:var(--ink); z-index:10;
 }
 .montage-root .logo{font-family:'Newsreader',serif; font-style:italic; font-size:20px; display:flex; align-items:center;}
-.montage-root .logo img{height:28px; width:auto; display:block; filter:grayscale(1) contrast(1.1);}
+.montage-root .logo img{height:28px; width:auto; display:block; filter:brightness(0) invert(1);}
 .montage-root nav{display:flex; gap:34px;}
 .montage-root nav a{
   font-family:'EB Garamond',serif; font-size:14px; letter-spacing:0.06em; text-transform:uppercase;
-  color:var(--ink); text-decoration:none; border-bottom:1px solid transparent; transition:color .15s ease, border-color .15s ease;
+  color:var(--paper); text-decoration:none; border-bottom:1px solid transparent; transition:color .15s ease, border-color .15s ease;
 }
-.montage-root nav a:hover{border-color:var(--forest); color:var(--forest);}
+.montage-root nav a:hover{border-color:var(--forest-soft); color:var(--forest-soft);}
 .montage-root .cta{
   font-family:'EB Garamond',serif; font-size:14px; letter-spacing:0.06em; text-transform:uppercase;
-  padding:10px 22px; border:1px solid var(--ink); background:none; color:var(--ink);
+  padding:10px 22px; border:1px solid var(--paper); background:none; color:var(--paper);
   cursor:pointer; transition:background .15s ease, color .15s ease, border-color .15s ease;
 }
-.montage-root .cta:hover{background:var(--forest); border-color:var(--forest); color:var(--paper);}
+.montage-root .cta:hover{background:var(--forest-soft); border-color:var(--forest-soft); color:var(--ink);}
 .montage-root .cta:active{transform:scale(0.98);}
 
 /* Hero — pure exhibition, no grid */
@@ -102,12 +103,19 @@
   display:inline-block; position:relative;
   font-style:italic; color:var(--forest);
   perspective:240px;
+  /* Fixed to the widest word ("remember") so the h1 — which is
+     centered and reflows on width changes — never re-wraps between
+     cycles. That reflow, not the panel's own transform, was what made
+     the transition "hop". */
+  width:9.5ch; text-align:center;
 }
 .montage-root .split-flap-panel{
   display:inline-block; position:relative;
+  width:100%;
 }
 .montage-root .split-flap-face{
   display:inline-block; backface-visibility:hidden;
+  width:100%;
 }
 .montage-root .split-flap-next{
   position:absolute; left:0; top:0;

@@ -1,15 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { getClients } from "../api/client";
+import React, { useState } from "react";
 
-export default function WorkCarousel({ onCardOpen }) {
-  const [clients, setClients] = useState([]);
+export default function WorkCarousel({ clients, onCardOpen }) {
   const [touched, setTouched] = useState(false);
-
-  useEffect(() => {
-    getClients()
-      .then(setClients)
-      .catch((err) => console.error(err));
-  }, []);
 
   const items = [...clients, ...clients];
 
