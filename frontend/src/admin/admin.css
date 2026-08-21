@@ -235,7 +235,10 @@
 }
 
 .admin-shell input[type="text"],
+.admin-shell input[type="email"],
 .admin-shell input[type="password"],
+.admin-shell input[type="tel"],
+.admin-shell input[type="number"],
 .admin-shell input:not([type]),
 .admin-shell textarea,
 .admin-shell select {
@@ -525,9 +528,27 @@
 }
 .admin-item-row {
   display: grid;
-  grid-template-columns: 1fr 64px 96px 32px;
+  grid-template-columns: 1fr 64px 96px 72px 32px;
   gap: 8px;
   align-items: center;
+}
+.admin-item-row-labels {
+  font-family: "Archivo", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  padding-bottom: 2px;
+}
+.admin-item-total {
+  font-size: 14px;
+  color: var(--ink-dim);
+  text-align: right;
+  padding-right: 4px;
+}
+@media (max-width: 520px) {
+  .admin-item-row { grid-template-columns: 1fr 48px 64px 56px 28px; gap: 4px; }
+  .admin-item-row-labels span { font-size: 9px; }
 }
 .admin-item-remove {
   padding: 0;
@@ -665,9 +686,11 @@
 .admin-password-form .admin-field:nth-child(2) { animation-delay: 0.13s; }
 .admin-password-form .admin-field:nth-child(3) { animation-delay: 0.2s; }
 
+.admin-shell input[type="email"],
 .admin-shell input[type="password"] {
   transition: border-color 0.15s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
+.admin-shell input[type="email"]:focus,
 .admin-shell input[type="password"]:focus {
   box-shadow: 0 6px 10px -8px var(--blue);
   transform: translateY(-1px);
@@ -725,6 +748,7 @@
   .admin-modal.admin-enter {
     animation: none !important;
   }
+  .admin-shell input[type="email"]:focus,
   .admin-shell input[type="password"]:focus { transform: none; }
 }
 

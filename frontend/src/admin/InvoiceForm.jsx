@@ -103,6 +103,13 @@ export default function InvoiceForm({ token, onCreated }) {
         <div className="admin-field">
           <label>Items</label>
           <div className="admin-item-rows">
+            <div className="admin-item-row admin-item-row-labels">
+              <span>Description</span>
+              <span>Qty</span>
+              <span>Unit price</span>
+              <span>Total</span>
+              <span />
+            </div>
             {items.map((it, i) => (
               <div className="admin-item-row" key={i}>
                 <input
@@ -131,6 +138,9 @@ export default function InvoiceForm({ token, onCreated }) {
                   onChange={(e) => updateItem(i, "unit_price", e.target.value)}
                   required
                 />
+                <span className="admin-item-total">
+                  {(Number(it.quantity || 0) * Number(it.unit_price || 0)).toFixed(2)}
+                </span>
                 <button
                   type="button"
                   className="btn-danger admin-item-remove"
