@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
@@ -11,6 +12,7 @@ from slowapi.middleware import SlowAPIMiddleware
 from app.config import get_settings
 from app.core.rate_limit import limiter
 from app.database import close_mongo_connection, connect_to_mongo, ensure_indexes
+from app.services.pdf_service import TEMPLATES_DIR
 from app.routers import (
     admin_clients,
     admin_invoices,
@@ -64,6 +66,12 @@ def create_app() -> FastAPI:
     app.include_router(auth.router)
     app.include_router(reviews.router)
     app.include_router(public_invoices.router)
+
+    # Serves the invoice logo (and any future invoice-template assets) at
+    # /assets/logo.png — used by the plain browser preview at /i/{id}.
+    # PDF generation doesn't hit this route at all; it reads the same
+    # file straight off disk (see pdf_service.render_pdf).
+    app.mount("/assets", StaticFiles(directory=str(TEMPLATES_DIR / "assets")), name="invoice-assets")
 
     # Admin (protected)
     app.include_router(admin_clients.router)
