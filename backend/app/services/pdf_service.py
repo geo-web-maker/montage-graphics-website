@@ -41,9 +41,18 @@ def _render_context(invoice: dict) -> dict:
 
 def render_html(invoice: dict, base_url: str | None = None) -> str:
     template = _env.get_template("invoice.html")
-    return template.render(invoice=_render_context(invoice))
+    ctx = _render_context(invoice)
+    # The browser preview (public_invoices.view_invoice) needs a real,
+    # servable URL for the logo — main.py mounts TEMPLATES_DIR/assets at
+    # /assets for exactly this. PDF rendering (render_pdf below) calls
+    # this with base_url=None on purpose: it wants the plain relative
+    # path instead, which WeasyPrint resolves straight off disk against
+    # TEMPLATES_DIR (see below) — no network round-trip, same reasoning
+    # as the fonts baked into the Dockerfile.
+    ctx["logo_url"] = f"{base_url}assets/logo.png" if base_url else "assets/logo.png"
+    return template.render(invoice=ctx)
 
 
 def render_pdf(invoice: dict, base_url: str | None = None) -> bytes:
-    html_str = render_html(invoice)
+    html_str = render_html(invoice)  # no base_url -> relative "assets/logo.png"
     return HTML(string=html_str, base_url=str(TEMPLATES_DIR)).write_pdf()
