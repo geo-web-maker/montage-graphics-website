@@ -40,3 +40,4 @@ async def ensure_indexes() -> None:
     await db.invoices.create_index("public_id", unique=True)
     await db.invoices.create_index("invoice_number", unique=True)
     await db.invoices.create_index("created_at")
+    await db.admin_users.create_index("email", unique=True)

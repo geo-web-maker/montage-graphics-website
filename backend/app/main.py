@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
@@ -14,6 +15,7 @@ from app.routers import (
     admin_clients,
     admin_invoices,
     admin_reviews,
+    admin_users,
     admin_work,
     auth,
     clients,
@@ -38,12 +40,12 @@ def create_app() -> FastAPI:
     app = FastAPI(title="Montage Graphics API", lifespan=lifespan)
 
     if settings.jwt_secret == "change-me-in-production":
-        logger.warning(
-            "JWT_SECRET is still set to the default placeholder value. "
-            "Every admin token can be forged. Set a strong, random JWT_SECRET "
-            "in the deployment's environment variables."
+        raise RuntimeError(
+            "JWT_SECRET is still the default placeholder — every admin token "
+            "would be forgeable. Set a strong, random JWT_SECRET before starting."
         )
 
+    app.add_middleware(ProxyHeadersMiddleware, trusted_hosts="*")
     app.state.limiter = limiter
     app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
     app.add_middleware(SlowAPIMiddleware)
@@ -69,6 +71,7 @@ def create_app() -> FastAPI:
     app.include_router(upload.router)
     app.include_router(admin_reviews.router)
     app.include_router(admin_invoices.router)
+    app.include_router(admin_users.router)
 
     @app.get("/health", tags=["health"])
     async def health():

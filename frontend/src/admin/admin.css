@@ -4,33 +4,176 @@
    from leaking into the rest of the app. */
 
 .admin-shell {
-  /* colors come from styles/tokens.css, loaded globally via index.css —
-     same source the public site (montage.css) uses, so both stay in sync */
-  --panel-raised: #22252b;
+  /* Archive Room palette — deliberately overrides styles/tokens.css'
+     dark/glass values, scoped to .admin-shell only so the public site
+     (montage.css, :root) is untouched. Approved in mockup-a2-archive-
+     sidebar.html. Variable NAMES match tokens.css on purpose: every
+     existing component (.admin-card, .btn-ghost, .admin-invoice-row...)
+     already reads var(--bg)/var(--panel)/var(--line)/etc., so redefining
+     the values here re-skins the whole admin area without touching a
+     single component file. */
+  --bg: #E9E7DF;
+  --panel: #F7F6F2;
+  --panel-raised: #F7F6F2;
+  --ink: #1C1C1A;
+  --ink-dim: #565550;
+  --blue: #2F4B3C;       /* forest — replaces the old blue accent */
+  --blue-hover: #3d6350;
+  --blue-dim: #7C9885;   /* forest-soft */
+  --danger: #B23A2A;     /* red */
+  --line: rgba(28, 28, 26, 0.15);
+  --line-strong: rgba(28, 28, 26, 0.35);
 
   min-height: 100vh;
   background: var(--bg);
   color: var(--ink);
-  font-family: "Inter", sans-serif;
+  font-family: "EB Garamond", serif;
 }
 .admin-shell * { box-sizing: border-box; }
 
-.admin-shell .display {
-  font-family: "Archivo Black", sans-serif;
-  letter-spacing: -0.01em;
+.admin-shell .display,
+.admin-shell h1 {
+  font-family: "Newsreader", serif;
+  font-weight: 400;
+  letter-spacing: 0;
 }
 
-/* ---------- shared top bar ---------- */
+.admin-shell .eyebrow {
+  font-family: "Archivo", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--danger);
+  font-weight: 700;
+  display: block;
+  margin-bottom: 6px;
+}
+
+/* ---------- shared top bar (Login.jsx still uses this) ---------- */
 .admin-topbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 22px 6vw;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--line-strong);
 }
-.admin-brand { font-size: 14px; letter-spacing: 0.06em; }
-.admin-brand b { color: var(--blue); }
-.admin-brand span { color: var(--ink-dim); }
+.admin-brand { font-family: "Newsreader", serif; font-style: italic; font-size: 16px; letter-spacing: 0; }
+.admin-brand b { font-style: normal; color: var(--blue-dim); }
+.admin-brand span { font-style: normal; color: var(--ink-dim); }
+
+/* ---------- Archive Room sidebar layout ---------- */
+.admin-archive-frame { display: flex; align-items: stretch; min-height: 100vh; }
+.admin-sidebar {
+  flex: 0 0 220px;
+  background: var(--ink);
+  color: var(--panel);
+  display: flex;
+  flex-direction: column;
+  padding: 26px 0;
+}
+.admin-sidebar-mark {
+  font-family: "Newsreader", serif;
+  font-style: italic;
+  font-size: 19px;
+  padding: 0 22px 24px;
+  border-bottom: 1px solid rgba(247, 246, 242, 0.14);
+  margin-bottom: 18px;
+}
+.admin-sidebar-mark b { font-style: normal; color: var(--blue-dim); }
+.admin-sidebar-mark span {
+  display: block;
+  font-family: "Archivo", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(247, 246, 242, 0.5);
+  margin-top: 6px;
+  font-style: normal;
+}
+.admin-sidebar-nav { display: flex; flex-direction: column; gap: 2px; padding: 0 12px; }
+.admin-sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: "EB Garamond", serif;
+  font-size: 15px;
+  color: rgba(247, 246, 242, 0.75);
+  text-decoration: none;
+  padding: 10px 12px;
+  border-radius: 2px;
+  position: relative;
+}
+.admin-sidebar-nav a .coord {
+  font-family: "Archivo", sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  color: rgba(247, 246, 242, 0.4);
+  width: 26px;
+  flex: 0 0 auto;
+}
+.admin-sidebar-nav a:hover { background: rgba(247, 246, 242, 0.06); color: var(--panel); }
+.admin-sidebar-nav a.active { background: var(--blue); color: var(--panel); }
+.admin-sidebar-nav a.active .coord { color: var(--blue-dim); }
+.admin-sidebar-nav a.active::before {
+  content: ""; position: absolute; left: -12px; top: 0; bottom: 0; width: 3px; background: var(--danger);
+}
+.admin-sidebar-foot {
+  margin-top: auto;
+  padding: 18px 22px 22px;
+  border-top: 1px solid rgba(247, 246, 242, 0.14);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.admin-sidebar-foot .btn-ghost {
+  width: 100%;
+  color: rgba(247, 246, 242, 0.75);
+  border-color: rgba(247, 246, 242, 0.3) !important;
+}
+.admin-sidebar-foot .btn-ghost:hover { color: var(--panel); background: rgba(247, 246, 242, 0.08); }
+
+.admin-content { flex: 1; min-width: 0; }
+.admin-content-header { margin-bottom: 26px; }
+.admin-content-header h1 { font-size: 26px; margin: 0; }
+
+.admin-mobile-topbar { display: none; }
+.admin-mobile-tabs { display: none; }
+.admin-mobile-menu { display: none; }
+
+@media (max-width: 860px) {
+  .admin-sidebar { display: none; }
+  .admin-mobile-topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 18px; background: var(--ink); color: var(--panel);
+    border-bottom: 1px solid rgba(247, 246, 242, 0.14);
+  }
+  .admin-mobile-topbar .brand { font-family: "Newsreader", serif; font-style: italic; font-size: 18px; }
+  .admin-mobile-topbar .brand b { font-style: normal; color: var(--blue-dim); }
+  .admin-hamburger {
+    background: none; border: 1px solid rgba(247, 246, 242, 0.35); color: var(--panel);
+    width: 34px; height: 34px; font-size: 14px; cursor: pointer;
+  }
+  .admin-mobile-menu {
+    display: flex; flex-direction: column; background: var(--ink); padding: 6px 18px 14px;
+    border-bottom: 1px solid rgba(247, 246, 242, 0.14);
+  }
+  .admin-mobile-menu a {
+    color: rgba(247, 246, 242, 0.75); text-decoration: none; padding: 10px 4px;
+    font-family: "EB Garamond", serif; font-size: 15px;
+  }
+  .admin-mobile-menu a.active { color: var(--danger); }
+  .admin-mobile-menu .btn-ghost { margin-top: 8px; align-self: flex-start; }
+  .admin-mobile-tabs {
+    display: flex; gap: 0; border-bottom: 1px solid var(--line-strong); overflow-x: auto;
+  }
+  .admin-mobile-tabs a {
+    flex: 0 0 auto; font-family: "Archivo", sans-serif; font-size: 11px; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--ink-dim); text-decoration: none;
+    padding: 12px 16px; border-bottom: 2px solid transparent; white-space: nowrap;
+  }
+  .admin-mobile-tabs a.active { color: var(--danger); border-bottom-color: var(--danger); }
+  .admin-main { padding: 22px 18px 40px !important; }
+}
 
 /* ---------- login ---------- */
 .admin-login-wrap {
@@ -44,8 +187,8 @@
   width: 100%;
   max-width: 360px;
   background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 0;
   padding: 32px 28px;
 }
 .admin-login-card .eyebrow {
@@ -57,10 +200,11 @@
 }
 
 /* ---------- dashboard ---------- */
-.admin-main { padding: 32px 6vw 60px; max-width: 1080px; margin: 0 auto; }
+.admin-main { padding: 34px 36px 56px; max-width: 1080px; margin: 0 auto; }
 .admin-section-label {
-  font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
-  color: var(--ink-dim); margin: 36px 0 16px;
+  font-family: "Archivo", sans-serif;
+  font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--danger); font-weight: 700; margin: 36px 0 16px;
 }
 .admin-grid {
   display: grid; grid-template-columns: 1fr 1fr; gap: 18px;
@@ -72,12 +216,15 @@
 /* ---------- form cards ---------- */
 .admin-card {
   background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 22px;
+  border: 1px solid var(--line-strong);
+  border-radius: 0;
+  padding: 24px;
 }
 .admin-card h2 {
-  font-size: 14px; font-weight: 600; margin-bottom: 18px;
+  font-family: "Newsreader", serif;
+  font-weight: 400;
+  font-size: 19px;
+  margin-bottom: 18px;
 }
 .admin-form { display: flex; flex-direction: column; gap: 14px; }
 
@@ -92,19 +239,20 @@
 .admin-shell input:not([type]),
 .admin-shell textarea,
 .admin-shell select {
-  background: var(--bg);
-  border: 1px solid var(--line);
-  border-radius: 6px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--line-strong);
+  border-radius: 0;
   color: var(--ink);
-  padding: 10px 12px;
-  font-size: 14px;
-  font-family: inherit;
+  padding: 9px 10px;
+  font-size: 15px;
+  font-family: "EB Garamond", serif;
   outline: none;
   transition: border-color 0.15s ease;
 }
 .admin-shell input:focus,
 .admin-shell select:focus {
-  border-color: var(--blue);
+  border-bottom-color: var(--blue);
 }
 .admin-shell select {
   appearance: none;
@@ -141,46 +289,45 @@
   border: none;
 }
 .btn-primary {
-  background: var(--glass-bg-strong);
-  color: var(--ink);
-  font-weight: 600;
-  padding: 11px 18px;
+  background: var(--blue);
+  color: var(--panel);
+  font-family: "EB Garamond", serif;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  padding: 11px 22px;
   font-size: 14px;
-  border-radius: 8px;
-  border: 1px solid var(--glass-border);
-  backdrop-filter: blur(14px) saturate(180%);
-  -webkit-backdrop-filter: blur(14px) saturate(180%);
-  box-shadow: inset 0 1px 0 var(--glass-highlight), 0 4px 16px rgba(0, 0, 0, 0.25);
-  transition: background 0.15s ease, transform 0.1s ease;
+  border-radius: 0;
+  border: 1px solid var(--blue);
+  transition: background 0.15s ease;
 }
-.btn-primary:hover:not(:disabled) { background: rgba(61, 127, 255, 0.5); }
-.btn-primary:active:not(:disabled) { transform: scale(0.97); }
+.btn-primary:hover:not(:disabled) { background: var(--blue-hover); }
 .btn-primary:disabled { opacity: 0.55; cursor: default; }
 
 .btn-ghost {
-  background: var(--glass-bg);
-  color: var(--ink-dim);
-  border: 1px solid var(--glass-border) !important;
+  background: none;
+  color: var(--ink);
+  border: 1px solid var(--line-strong) !important;
   padding: 9px 16px;
   font-size: 13px;
-  border-radius: 8px;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  font-family: "EB Garamond", serif;
+  text-transform: uppercase;
+  border-radius: 0;
   transition: color 0.15s ease, background 0.15s ease;
 }
-.btn-ghost:hover { color: var(--ink); background: rgba(242, 243, 245, 0.14); }
+.btn-ghost:hover { color: var(--ink); background: rgba(28, 28, 26, 0.05); }
 
 .btn-danger {
-  background: rgba(224, 100, 79, 0.1);
+  background: none;
   color: var(--danger);
-  border: 1px solid rgba(224, 100, 79, 0.35) !important;
+  border: 1px solid var(--danger) !important;
   padding: 7px 12px;
-  font-size: 12px;
-  border-radius: 8px;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  font-size: 11px;
+  font-family: "Archivo", sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-radius: 0;
 }
-.btn-danger:hover:not(:disabled) { background: rgba(224, 100, 79, 0.2); }
+.btn-danger:hover:not(:disabled) { background: rgba(178, 58, 42, 0.08); }
 .btn-danger:disabled { opacity: 0.5; cursor: default; }
 
 /* ---------- feedback states ---------- */
@@ -209,12 +356,13 @@
 }
 .admin-client-row {
   background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: 0;
   overflow: hidden;
+  margin-bottom: 10px;
 }
 .admin-client-row.open {
-  border-color: var(--blue-dim);
+  border-color: var(--blue);
 }
 .admin-client-header {
   width: 100%;
@@ -391,14 +539,15 @@
 
 .admin-invoice-search {
   width: 100%;
-  margin-bottom: 14px;
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 6px;
+  margin-bottom: 18px;
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  border-radius: 0;
   color: var(--ink);
   padding: 10px 12px;
-  font-size: 14px;
-  font-family: inherit;
+  font-size: 15px;
+  font-family: "EB Garamond", serif;
+  font-style: italic;
   outline: none;
 }
 .admin-invoice-search:focus { border-color: var(--blue); }
@@ -414,10 +563,10 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 10px;
-  padding: 10px 12px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--bg);
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
 }
 .admin-invoice-info {
   display: flex;
@@ -461,3 +610,36 @@
 }
 
 
+
+/* ---------- password change modal (voluntary self-service) ---------- */
+.admin-modal-overlay {
+  position: fixed;
+  inset: 0;
+  min-height: 0;
+  background: rgba(28, 28, 26, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 1000;
+}
+.admin-modal {
+  width: 100%;
+  max-width: 380px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* ---------- entrance transitions ---------- */
+/* Same fade/rise language as the public site's LoadingScreen — a quiet
+   settle-in rather than an abrupt swap, on the login card, the post-login
+   dashboard, and the forced/voluntary password screens. */
+@keyframes admin-fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.admin-enter { animation: admin-fade-up 0.5s ease both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-enter { animation: none; }
+}

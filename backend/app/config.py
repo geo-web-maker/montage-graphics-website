@@ -17,9 +17,19 @@ class Settings(BaseSettings):
     jwt_algorithm: str = "HS256"
     jwt_expire_minutes: int = 60 * 12  # 12 hours
 
+    # Deprecated: pre-RBAC single-admin login. Only read by
+    # scripts/seed_admin.py to migrate the original admin into the first
+    # admin_users row — auth.py no longer checks these.
     admin_username: str = "admin"
-    # Generate with: python -c "from passlib.hash import bcrypt; print(bcrypt.hash('yourpassword'))"
     admin_password_hash: str = ""
+
+    # EgoSMS — temp-password delivery for admin onboarding/reset
+    egosms_username: str = ""
+    egosms_password: str = ""
+    egosms_sender_id: str = "MONTAGE"
+    # True by default (dev-safe): logs the SMS instead of hitting the real
+    # EgoSMS API. Must be explicitly set False on Render.
+    sms_debug_mode: bool = True
 
     # CORS - comma-separated list of allowed frontend origins
     cors_origins: str = "http://localhost:5173"

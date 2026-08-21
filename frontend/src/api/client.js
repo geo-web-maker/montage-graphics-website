@@ -41,8 +41,16 @@ export function getReviews() {
 
 // ---- Auth ----
 
-export function login(username, password) {
-  return request("/auth/login", { method: "POST", body: { username, password } });
+export function login(email, password) {
+  return request("/auth/login", { method: "POST", body: { email, password } });
+}
+
+export function changePassword(token, oldPassword, newPassword) {
+  return request("/auth/change-password", {
+    method: "POST",
+    token,
+    body: { old_password: oldPassword, new_password: newPassword },
+  });
 }
 
 // ---- Admin: clients ----
@@ -114,4 +122,22 @@ export function getInvoiceViewUrl(publicId) {
 
 export function getInvoicePdfUrl(publicId) {
   return `${BASE_URL}/i/${publicId}/pdf`;
+}
+
+// ---- Admin: admins (superadmin manages, admin views read-only) ----
+
+export function listAdmins(token) {
+  return request("/admin/admins", { token });
+}
+
+export function createAdmin(token, payload) {
+  return request("/admin/admins", { method: "POST", body: payload, token });
+}
+
+export function resetAdminPassword(token, adminId) {
+  return request(`/admin/admins/${adminId}/password`, { method: "PATCH", token });
+}
+
+export function deleteAdmin(token, adminId) {
+  return request(`/admin/admins/${adminId}`, { method: "DELETE", token });
 }

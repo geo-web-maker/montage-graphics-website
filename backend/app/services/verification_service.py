@@ -29,7 +29,9 @@ def generate_verification_code(invoice: dict) -> str:
     a QR code linking to /i/{public_id}, so anyone can cross-check a
     printed/forwarded copy against the live record."""
     settings = get_settings()
-    secret = settings.jwt_secret.encode()
+    # Domain-separated from the JWT signing key: same secret, different
+    # purpose, so a leak of one doesn't automatically compromise the other.
+    secret = hmac.new(settings.jwt_secret.encode(), b"invoice-verification", hashlib.sha256).digest()
     digest = hmac.new(secret, _canonical_payload(invoice).encode(), hashlib.sha256).hexdigest()
     return digest[:8].upper()
 

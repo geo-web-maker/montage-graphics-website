@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
-from app.core.deps import get_current_admin
+from app.core.deps import require_role
 from app.core.object_id import parse_object_id
 from app.database import get_database
 from app.schemas.review import ReviewCreate, ReviewOut, ReviewUpdate
@@ -9,7 +9,7 @@ from app.schemas.review import ReviewCreate, ReviewOut, ReviewUpdate
 router = APIRouter(
     prefix="/admin/reviews",
     tags=["reviews (admin)"],
-    dependencies=[Depends(get_current_admin)],
+    dependencies=[Depends(require_role("superadmin", "admin"))],
 )
 
 

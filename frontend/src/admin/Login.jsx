@@ -1,27 +1,27 @@
 import React, { useState } from "react";
 
 export default function Login({ onSubmit, error, loading }) {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   function handleSubmit(e) {
     e.preventDefault();
-    onSubmit(username, password);
+    onSubmit(email, password);
   }
 
   return (
     <div className="admin-shell">
       <div className="admin-login-wrap">
-        <div className="admin-login-card">
+        <div className="admin-login-card admin-enter">
           <div className="eyebrow">Montage Graphics</div>
           <h1 className="display">Admin sign in</h1>
           <form className="admin-form" onSubmit={handleSubmit}>
             <div className="admin-field">
-              <label>Username</label>
+              <label>Email</label>
               <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 autoFocus
               />
             </div>

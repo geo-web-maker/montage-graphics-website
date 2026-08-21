@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends
 
-from app.core.deps import get_current_admin
+from app.core.deps import require_role
 from app.schemas.auth import UploadSignatureResponse
 from app.services.cloudinary_service import build_upload_signature
 
 router = APIRouter(
     prefix="/admin",
     tags=["upload (admin)"],
-    dependencies=[Depends(get_current_admin)],
+    dependencies=[Depends(require_role("superadmin", "admin"))],
 )
 
 

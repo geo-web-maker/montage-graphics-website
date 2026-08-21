@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
-from app.core.deps import get_current_admin
+from app.core.deps import get_current_admin, require_role
 from app.database import get_database
 from app.schemas.invoice import InvoiceCreate, InvoiceListItem, InvoiceOut
 from app.services import invoice_service
@@ -9,17 +9,20 @@ from app.services import invoice_service
 router = APIRouter(
     prefix="/admin/invoices",
     tags=["invoices (admin)"],
-    dependencies=[Depends(get_current_admin)],
+    dependencies=[Depends(require_role("superadmin", "admin", "invoice_admin"))],
 )
 
 
 @router.post("", response_model=InvoiceOut, status_code=status.HTTP_201_CREATED)
 async def create_invoice(
     payload: InvoiceCreate,
-    admin_username: str = Depends(get_current_admin),
+    admin_user: dict = Depends(get_current_admin),
     db: AsyncIOMotorDatabase = Depends(get_database),
 ):
-    return await invoice_service.create_invoice(db, payload, created_by=admin_username)
+    # get_current_admin now returns the full admin_users doc, not a bare
+    # username — audit log actor uses email since that's the unique,
+    # human-readable identifier admins log in with.
+    return await invoice_service.create_invoice(db, payload, created_by=admin_user["email"])
 
 
 @router.get("", response_model=list[InvoiceListItem])
