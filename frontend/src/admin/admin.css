@@ -630,6 +630,104 @@
   overflow-y: auto;
 }
 
+/* ---------- password dialogs (forced first-login + voluntary modal) ---------- */
+.admin-password-icon {
+  width: 42px;
+  height: 42px;
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  color: var(--blue);
+  animation: admin-icon-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation-delay: 0.08s;
+}
+.admin-card > .admin-password-icon { margin-bottom: 14px; }
+@keyframes admin-icon-pop {
+  from { opacity: 0; transform: scale(0.5) rotate(-10deg); }
+  to { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+.admin-empty-inline {
+  border: none;
+  padding: 0 0 20px;
+  text-align: left;
+  font-size: 13px;
+}
+
+/* fields settle in one after another instead of popping in all at once */
+.admin-password-form .admin-field {
+  animation: admin-fade-up 0.4s ease both;
+}
+.admin-password-form .admin-field:nth-child(1) { animation-delay: 0.06s; }
+.admin-password-form .admin-field:nth-child(2) { animation-delay: 0.13s; }
+.admin-password-form .admin-field:nth-child(3) { animation-delay: 0.2s; }
+
+.admin-shell input[type="password"] {
+  transition: border-color 0.15s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+.admin-shell input[type="password"]:focus {
+  box-shadow: 0 6px 10px -8px var(--blue);
+  transform: translateY(-1px);
+}
+
+/* wrong password / mismatch: a quick, un-ignorable shake on the message */
+@keyframes admin-shake {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-4px); }
+  40%, 60% { transform: translateX(4px); }
+}
+.admin-password-form .admin-error { animation: admin-shake 0.4s ease; }
+
+.admin-password-success {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--blue);
+  font-size: 14px;
+  font-family: "EB Garamond", serif;
+  animation: admin-fade-up 0.3s ease both;
+}
+.admin-check-pop {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  animation: admin-icon-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* modal: backdrop fades, card settles in with a touch of overshoot */
+.admin-modal-overlay {
+  animation: admin-backdrop-in 0.25s ease both;
+  backdrop-filter: blur(2px);
+}
+@keyframes admin-backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.admin-modal.admin-enter {
+  animation: admin-modal-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes admin-modal-in {
+  from { opacity: 0; transform: translateY(14px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-password-icon,
+  .admin-password-form .admin-field,
+  .admin-password-form .admin-error,
+  .admin-password-success,
+  .admin-check-pop,
+  .admin-modal-overlay,
+  .admin-modal.admin-enter {
+    animation: none !important;
+  }
+  .admin-shell input[type="password"]:focus { transform: none; }
+}
+
 /* ---------- entrance transitions ---------- */
 /* Same fade/rise language as the public site's LoadingScreen — a quiet
    settle-in rather than an abrupt swap, on the login card, the post-login
