@@ -1,21 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { getAllReviews, getClients } from "../api/client";
+import { getAllReviews, getClients, listInvoices } from "../api/client";
 import ClientForm from "./ClientForm";
 import WorkImageForm from "./WorkImageForm";
 import ClientList from "./ClientList";
 import ReviewsAdmin from "./ReviewsAdmin";
+import InvoiceForm from "./InvoiceForm";
+import InvoiceList from "./InvoiceList";
 
 export default function Dashboard({ token, onLogout }) {
   const [clients, setClients] = useState([]);
   const [reviews, setReviews] = useState([]);
+  const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    Promise.all([getClients(), getAllReviews(token)])
-      .then(([clientsData, reviewsData]) => {
+    Promise.all([getClients(), getAllReviews(token), listInvoices(token)])
+      .then(([clientsData, reviewsData, invoicesData]) => {
         setClients(clientsData);
         setReviews(reviewsData);
+        setInvoices(invoicesData);
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
@@ -67,6 +71,24 @@ export default function Dashboard({ token, onLogout }) {
             reviews={reviews}
             onCreated={(r) => setReviews((prev) => [...prev, r])}
             onDeleted={(id) => setReviews((prev) => prev.filter((r) => r.id !== id))}
+          />
+        )}
+
+        <div className="admin-section-label">Invoices</div>
+        <div className="admin-grid">
+          <InvoiceForm token={token} onCreated={(inv) => setInvoices((prev) => [inv, ...prev])} />
+        </div>
+        {loading ? (
+          <p className="admin-empty">Loading...</p>
+        ) : (
+          <InvoiceList
+            token={token}
+            invoices={invoices}
+            onVoided={(updated) =>
+              setInvoices((prev) =>
+                prev.map((inv) => (inv.public_id === updated.public_id ? updated : inv))
+              )
+            }
           />
         )}
       </main>

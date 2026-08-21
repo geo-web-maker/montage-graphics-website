@@ -92,3 +92,26 @@ export function deleteReview(token, reviewId) {
 export function getUploadSignature(token, { forLogo = false } = {}) {
   return request(`/admin/upload-signature?for_logo=${forLogo}`, { token });
 }
+
+// ---- Admin: invoices ----
+
+export function createInvoice(token, payload) {
+  return request("/admin/invoices", { method: "POST", body: payload, token });
+}
+
+export function listInvoices(token) {
+  return request("/admin/invoices", { token });
+}
+
+export function voidInvoice(token, publicId) {
+  return request(`/admin/invoices/${publicId}/void`, { method: "POST", token });
+}
+
+// Public receipt/PDF links — served directly by the backend, not the SPA.
+export function getInvoiceViewUrl(publicId) {
+  return `${BASE_URL}/i/${publicId}`;
+}
+
+export function getInvoicePdfUrl(publicId) {
+  return `${BASE_URL}/i/${publicId}/pdf`;
+}

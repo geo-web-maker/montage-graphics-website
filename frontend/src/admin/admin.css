@@ -360,6 +360,95 @@
 .admin-upload-item.status-done .admin-upload-status { color: #4caf7d; opacity: 1; }
 .admin-upload-item.status-error .admin-upload-status { color: #e0644f; opacity: 1; }
 
+/* ---------- invoices ---------- */
+.admin-field-row {
+  display: flex;
+  gap: 14px;
+}
+.admin-field-row .admin-field { flex: 1; min-width: 0; }
+@media (max-width: 520px) {
+  .admin-field-row { flex-direction: column; }
+}
+
+.admin-item-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.admin-item-row {
+  display: grid;
+  grid-template-columns: 1fr 64px 96px 32px;
+  gap: 8px;
+  align-items: center;
+}
+.admin-item-remove {
+  padding: 0;
+  height: 34px;
+  font-size: 16px;
+  line-height: 1;
+}
+.admin-item-add { align-self: flex-start; margin-top: 8px; padding: 7px 12px; font-size: 12px; }
+
+.admin-invoice-search {
+  width: 100%;
+  margin-bottom: 14px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--ink);
+  padding: 10px 12px;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+}
+.admin-invoice-search:focus { border-color: var(--blue); }
+
+.admin-invoice-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.admin-invoice-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+}
+.admin-invoice-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+.admin-invoice-number { color: var(--ink); font-weight: 600; }
+.admin-invoice-date,
+.admin-invoice-total { color: var(--ink-dim); }
+.admin-voided-badge {
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--danger);
+  background: rgba(224, 100, 79, 0.12);
+  border: 1px solid rgba(224, 100, 79, 0.35);
+  border-radius: 4px;
+  padding: 2px 6px;
+}
+.admin-invoice-actions {
+  display: flex;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+.admin-invoice-actions a.btn-ghost {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
 .admin-form-actions {
   display: flex;
   align-items: center;
