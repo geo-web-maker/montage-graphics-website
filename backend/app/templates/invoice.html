@@ -38,15 +38,8 @@
     justify-content: space-between;
     align-items: flex-start;
   }
-  .logo-block { display: flex; align-items: center; gap: 10px; }
-  .logo-mark {
-    width: 42px; height: 42px;
-    background: #fff; border-radius: 6px;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 700; color: #0b5c3f; font-size: 16px;
-  }
-  .logo-text .name { font-weight: 700; font-size: 16px; line-height: 1.15; }
-  .logo-text .tagline { font-size: 8px; opacity: 0.7; }
+  .logo-block { display: flex; align-items: center; }
+  .logo-block img { height: 34px; width: auto; display: block; }
 
   .date-info { text-align: right; font-size: 13px; }
   .date-info .block { margin-bottom: 14px; }
@@ -166,10 +159,7 @@
     <div class="header-inner">
       <div class="header-top">
         <div class="logo-block">
-          <div class="logo-mark">MG</div>
-          <div class="logo-text">
-            <div class="name">Montage<br>Graphics</div>
-          </div>
+          <img src="{{ invoice.logo_url }}" alt="Montage Graphics">
         </div>
         <div class="date-info">
           <div class="block">
