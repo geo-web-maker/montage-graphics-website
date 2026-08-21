@@ -13,5 +13,10 @@ python-dotenv==1.0.1
 slowapi==0.1.9
 jinja2==3.1.4
 weasyprint==62.3
+# weasyprint 62.3 calls pydyf's Stream API using the pre-0.11 signature;
+# pydyf 0.11+ changed it and breaks PDF generation with
+# "AttributeError: 'super' object has no attribute 'transform'".
+# Pin until we upgrade weasyprint to a version built against the new pydyf.
+pydyf<0.11
 qrcode[pil]==7.4.2
 httpx==0.27.2
