@@ -15,9 +15,17 @@ async function request(path, { method = "GET", body, token } = {}) {
   });
 
   if (!res.ok) {
-    // FastAPI error bodies look like { "detail": "..." }
-    const detail = await res.json().catch(() => null);
-    throw new Error(detail?.detail || `Request failed: ${res.status}`);
+    // FastAPI error bodies look like { "detail": "..." } for HTTPException,
+    // but { "detail": [{ "loc": [...], "msg": "...", "type": "..." }] }
+    // for 422 Pydantic validation errors — normalize both to a string.
+    const body = await res.json().catch(() => null);
+    let message = `Request failed: ${res.status}`;
+    if (typeof body?.detail === "string") {
+      message = body.detail;
+    } else if (Array.isArray(body?.detail)) {
+      message = body.detail.map((e) => e.msg).join("; ");
+    }
+    throw new Error(message);
   }
 
   // 204 No Content has no body to parse
