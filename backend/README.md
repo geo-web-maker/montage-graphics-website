@@ -17,15 +17,27 @@ app/
     client.py                Client request/response shapes
     work_image.py             WorkImage request/response shapes
     auth.py                   Login + upload-signature response shapes
+    invoice.py                Invoice request/response shapes
   routers/
     clients.py               GET /clients                  (public)
     work.py                  GET /clients/{slug}/work       (public)
     auth.py                  POST /auth/login
+    public_invoices.py       GET /i/{public_id}             (public)
+                              GET /i/{public_id}/pdf         (public)
     admin_clients.py         POST/PATCH/DELETE /admin/clients   (protected)
     admin_work.py            POST/DELETE /admin/.../work        (protected)
     upload.py                GET /admin/upload-signature         (protected)
+    admin_invoices.py        POST /admin/invoices                (protected)
+                              GET /admin/invoices                 (protected)
+                              GET /admin/invoices/{public_id}     (protected)
+                              POST /admin/invoices/{public_id}/void (protected)
   services/
     cloudinary_service.py    signs direct-to-Cloudinary uploads
+    invoice_service.py       invoice numbering, totals, create/void
+    verification_service.py  HMAC anti-forgery code for printed invoices
+    pdf_service.py           Jinja2 render -> WeasyPrint, embeds QR code
+  templates/
+    invoice.html              Jinja2 template, shared by the HTML view and PDF
 ```
 
 ## Data model (MongoDB)
@@ -46,6 +58,25 @@ app/
 | image_url | str | Cloudinary URL |
 | caption | str | |
 | display_order | int | order within that client's grid |
+
+**invoices**
+| field | type | notes |
+|---|---|---|
+| public_id | str | unique, random (`secrets.token_urlsafe(16)`) — the shareable link, never guessable |
+| invoice_number | str | e.g. `MG-INV-2026-014`, atomic per-year counter |
+| client_name | str | |
+| date / due_date | date | |
+| items | list | embedded `{description, quantity, unit_price}` |
+| subtotal / tax / total / balance | float | computed server-side at creation |
+| verification_code | str | HMAC-derived, printed with a QR code on the PDF |
+| voided | bool | invoices are immutable once issued — corrections are a new invoice, not an edit |
+| created_by | str | admin username |
+
+Routes:
+- `POST /admin/invoices` (protected) — admin fills a form, backend computes totals + numbering
+- `GET /i/{public_id}` (public) — HTML view, printable
+- `GET /i/{public_id}/pdf` (public) — same template through WeasyPrint
+- `POST /admin/invoices/{public_id}/void` (protected) — flags a record, doesn't delete/edit it
 
 ## Setup
 
@@ -96,3 +127,15 @@ Typical Railway/Render start command:
 ```bash
 uvicorn app.main:app --host 0.0.0.0 --port $PORT
 ```
+
+**Invoice PDFs need a Dockerfile, not the native buildpack.** WeasyPrint
+depends on system libraries (Pango, Cairo, GDK-PixBuf) that Render's plain
+Python buildpack won't install — only `pip install` runs there. A
+`Dockerfile` is included in this folder with those `apt-get` packages
+pinned. On Render: change the service's environment to **Docker** (instead
+of "Python 3"), point it at this `backend/` folder, and it will pick up
+the Dockerfile automatically. No start command override needed — the
+Dockerfile's `CMD` handles it, but Render still needs `$PORT` respected;
+if your plan requires binding to Render's injected port, override the
+`CMD` to `uvicorn app.main:app --host 0.0.0.0 --port $PORT` in the
+service settings.

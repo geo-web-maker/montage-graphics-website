@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Invoice {{ invoice.invoice_number }}</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+    color: #1a1a1a;
+    background: #fff;
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto;
+  }
+
+  /* ===== HEADER ===== */
+  .header {
+    position: relative;
+    background: linear-gradient(135deg, #0b5c3f 0%, #14805a 100%);
+    color: #fff;
+    padding: 30px 50px 55px;
+    overflow: hidden;
+  }
+  .header-pattern {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .header-inner {
+    position: relative;
+    z-index: 1;
+  }
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .logo-block { display: flex; align-items: center; gap: 10px; }
+  .logo-mark {
+    width: 42px; height: 42px;
+    background: #fff; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; color: #0b5c3f; font-size: 16px;
+  }
+  .logo-text .name { font-weight: 700; font-size: 16px; line-height: 1.15; }
+  .logo-text .tagline { font-size: 8px; opacity: 0.7; }
+
+  .date-info { text-align: right; font-size: 13px; }
+  .date-info .block { margin-bottom: 14px; }
+  .date-info h4 { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .date-info .label { font-weight: 700; font-size: 13px; margin-bottom: 2px; }
+  .date-info .value { opacity: 0.92; }
+
+  .invoice-title {
+    font-size: 48px; font-weight: 800;
+    color: #f5a623; letter-spacing: 0.5px;
+    margin-top: 14px; line-height: 1;
+  }
+  .invoice-id { font-size: 14px; margin-top: 6px; opacity: 0.95; }
+  .due-date { margin-top: 18px; font-size: 14px; font-weight: 700; }
+  .due-date span { font-weight: 400; opacity: 0.92; }
+
+  /* ===== TABLE CARD ===== */
+  .table-card {
+    position: relative;
+    z-index: 2;
+    background: #fff;
+    margin: -40px 40px 0;
+    border-radius: 24px 24px 0 0;
+    box-shadow: 0 -6px 20px rgba(0,0,0,0.06);
+    padding: 18px 24px 6px;
+  }
+  .table-header-row, .table-row {
+    display: flex;
+    align-items: center;
+    border-radius: 14px;
+    padding: 9px 20px;
+    margin-bottom: 6px;
+  }
+  .table-header-row { background: #e2e2e2; }
+  .table-row.shaded { background: #e9e9e9; }
+  .table-row.plain { background: #fff; }
+  .col-no { width: 8%; font-size: 13px; text-align: center; }
+  .col-desc { width: 30%; font-size: 13px; text-align: center; }
+  .col-qty { width: 15%; font-size: 13px; text-align: center; }
+  .col-price { width: 23%; font-size: 13px; text-align: center; }
+  .col-amount { width: 24%; font-size: 13px; text-align: center; }
+  .table-header-row .col-no,
+  .table-header-row .col-desc,
+  .table-header-row .col-qty,
+  .table-header-row .col-price,
+  .table-header-row .col-amount { font-weight: 700; color: #1a1a1a; }
+  .table-row .col-desc, .table-row .col-no { color: #333; }
+  .table-row .col-qty, .table-row .col-price, .table-row .col-amount { color: #333; }
+
+  /* ===== FOOTER CONTENT ===== */
+  .content { padding: 15px 50px 10px; }
+  .footer-grid {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+  }
+  .footer-left { width: 45%; }
+  .footer-right { width: 45%; }
+
+  .totals-row {
+    display: flex; align-items: center;
+    font-size: 13px; padding: 5px 20px;
+  }
+  .totals-row .label { font-weight: 600; width: 100px; flex-shrink: 0; }
+  .totals-row .colon { width: 24px; text-align: center; flex-shrink: 0; }
+  .totals-row .value { flex: 1; text-align: right; }
+  .totals-row.gap-below { margin-bottom: 18px; }
+
+  .totals-total {
+    display: flex; align-items: center;
+    background: #0b5c3f; color: #fff;
+    padding: 14px 20px; border-radius: 14px;
+    margin-top: 8px; font-weight: 700; font-size: 14px;
+  }
+  .totals-total .label { width: 100px; flex-shrink: 0; }
+  .totals-total .colon { width: 24px; text-align: center; flex-shrink: 0; }
+  .totals-total .value { flex: 1; text-align: right; }
+  .signature-block { text-align: right; margin-top: 12px; }
+  .signature-block .name { font-weight: 700; font-size: 14px; }
+  .signature-block .role { font-size: 12px; color: #444; }
+
+  .verify-block { text-align: right; margin-top: 20px; }
+  .verify-block .label { font-size: 10px; color: #999; letter-spacing: 0.5px; text-transform: uppercase; }
+  .verify-block .code { font-size: 13px; font-weight: 700; color: #0b5c3f; letter-spacing: 1px; font-family: 'Courier New', monospace; }
+
+  .thank-you-block { margin-top: 25px; }
+  .thank-you { font-weight: 700; font-size: 14px; margin-bottom: 5px; }
+  .contact-line { font-size: 11px; color: #444; display: table; margin-bottom: 5px; border-spacing: 6px 0; }
+  .contact-line .icon { display: table-cell; vertical-align: middle; width: 12px; }
+  .contact-line .icon svg { display: block; }
+  .contact-line .text { display: table-cell; vertical-align: middle; }
+  .contact-line .sep { margin: 0 6px; color: #999; }
+
+  .payment-block { margin-top: 18px; }
+  .payment-heading { color: #0b5c3f; font-weight: 700; font-size: 13px; margin-bottom: 6px; }
+  .payment-detail { font-size: 12px; color: #444; line-height: 1.6; }
+
+  .terms { padding: 12px 50px 20px; }
+  .terms h4 { color: #0b5c3f; font-size: 14px; margin-bottom: 8px; }
+  .terms p { font-size: 12px; color: #444; line-height: 1.6; }
+  .terms .thanks-block { margin-top: 14px; }
+</style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="header">
+    <svg class="header-pattern" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="crosshatch" width="42" height="42" patternUnits="userSpaceOnUse">
+          <path d="M0,42 L42,0" stroke="#ffffff" stroke-opacity="0.05" stroke-width="1"/>
+          <path d="M0,0 L42,42" stroke="#ffffff" stroke-opacity="0.05" stroke-width="1"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#crosshatch)"/>
+    </svg>
+    <div class="header-inner">
+      <div class="header-top">
+        <div class="logo-block">
+          <div class="logo-mark">MG</div>
+          <div class="logo-text">
+            <div class="name">Montage<br>Graphics</div>
+          </div>
+        </div>
+        <div class="date-info">
+          <div class="block">
+            <h4>Date Information</h4>
+            <div class="value">{{ invoice.date.strftime('%m/ %d/%Y') }}</div>
+          </div>
+          <div class="block">
+            <div class="label">Invoice Number</div>
+            <div class="value">{{ invoice.invoice_number }}</div>
+          </div>
+          <div class="block">
+            <div class="label">INVOICE TO:</div>
+            <div class="value">{{ invoice.client_name }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="invoice-title">Invoice</div>
+      <div class="invoice-id">#{{ invoice.invoice_number }}</div>
+
+      <div class="due-date">Due:<span>{{ invoice.due_date.strftime('%m/%d/%Y') }}</span></div>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-card">
+    <div class="table-header-row">
+      <div class="col-no">No</div>
+      <div class="col-desc">Description</div>
+      <div class="col-qty">Quantity</div>
+      <div class="col-price">Unit Price (UGX)</div>
+      <div class="col-amount">Amount (UGX)</div>
+    </div>
+    {% for item in invoice['items'] %}
+    <div class="table-row {{ 'shaded' if loop.index is even else 'plain' }}">
+      <div class="col-no">{{ "%02d"|format(loop.index) }}</div>
+      <div class="col-desc">{{ item.description }}</div>
+      <div class="col-qty">{{ item.quantity }}</div>
+      <div class="col-price">{{ "{:,.0f}".format(item.unit_price) }} (UGX)</div>
+      <div class="col-amount">{{ "{:,.0f}".format(item.amount) }} (UGX)</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- FOOTER: two columns side by side -->
+  <div class="content">
+    <div class="footer-grid">
+      <div class="footer-left">
+        <div class="thank-you-block">
+          <div class="thank-you">Thank You For Your Business</div>
+          <div class="contact-line">
+            <span class="icon">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="#0b5c3f"><path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24 11.36 11.36 0 0 0 3.56.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.36 11.36 0 0 0 .57 3.56 1 1 0 0 1-.25 1.02l-2.2 2.21z"/></svg>
+            </span>
+            <span class="text">{{ invoice.contact_phone | default('+256 793740538', true) }}</span>
+          </div>
+          <div class="contact-line">
+            <span class="icon">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#0b5c3f"><path d="M2 5.5A1.5 1.5 0 0 1 3.5 4h17A1.5 1.5 0 0 1 22 5.5v13a1.5 1.5 0 0 1-1.5 1.5h-17A1.5 1.5 0 0 1 2 18.5v-13zm2.4.5 7.1 5.68a.75.75 0 0 0 .94 0L19.6 6H4.4zM20 7.8l-6.66 5.33a2.75 2.75 0 0 1-3.44 0L4 7.8v10.7h16V7.8z"/></svg>
+            </span>
+            <span class="text">{{ invoice.contact_email | default('montagegraphics1@gmail.com', true) }}</span>
+          </div>
+        </div>
+        <div class="payment-block">
+          <div class="payment-heading">PAYMENT METHOD</div>
+          <div class="payment-detail">
+            Mobile Money: {{ invoice.payment_number | default('0793740538', true) }}<br>
+            Registered Name: {{ invoice.payment_name | default('Mwesigwa Joseph', true) }}
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-right">
+        <div class="totals-row">
+          <span class="label">Balance</span>
+          <span class="colon">:</span>
+          <span class="value">{{ "{:,.0f}".format(invoice.balance) }} (UGX)</span>
+        </div>
+        <div class="totals-row">
+          <span class="label">Sub Total</span>
+          <span class="colon">:</span>
+          <span class="value">{{ "{:,.0f}".format(invoice.subtotal) }} (UGX)</span>
+        </div>
+        <div class="totals-row gap-below" style="margin-top:18px;">
+          <span class="label">Tax</span>
+          <span class="colon">:</span>
+          <span class="value">{{ "{:,.0f}".format(invoice.tax) }} (UGX)</span>
+        </div>
+        <div class="totals-total">
+          <span class="label">Total</span>
+          <span class="colon">:</span>
+          <span class="value">{{ "{:,.0f}".format(invoice.total) }} (UGX)</span>
+        </div>
+        <div class="signature-block">
+          <div class="name">{{ invoice.accounting_manager }}</div>
+          <div class="role">Accounting Manager</div>
+        </div>
+        <div class="verify-block">
+          <div class="label">Verification Code</div>
+          <div class="code">{{ invoice.verification_code }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TERMS -->
+  <div class="terms">
+    <h4>TERMS AND CONDITIONS APPLY</h4>
+    <p>Payment is due upon receipt of this invoice unless otherwise agreed.</p>
+    <p>Kindly reference Invoice No. {{ invoice.invoice_number }} when making payment.</p>
+    <div class="thanks-block">
+      <p>Thank you for choosing Montage Graphics.</p>
+      <p>We appreciate the opportunity to support {{ invoice.client_name }} with creative design services.</p>
+    </div>
+  </div>
+
+</body>
+</html>

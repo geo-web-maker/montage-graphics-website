@@ -12,10 +12,12 @@ from app.core.rate_limit import limiter
 from app.database import close_mongo_connection, connect_to_mongo, ensure_indexes
 from app.routers import (
     admin_clients,
+    admin_invoices,
     admin_reviews,
     admin_work,
     auth,
     clients,
+    public_invoices,
     reviews,
     upload,
     work,
@@ -59,12 +61,14 @@ def create_app() -> FastAPI:
     app.include_router(work.router)
     app.include_router(auth.router)
     app.include_router(reviews.router)
+    app.include_router(public_invoices.router)
 
     # Admin (protected)
     app.include_router(admin_clients.router)
     app.include_router(admin_work.router)
     app.include_router(upload.router)
     app.include_router(admin_reviews.router)
+    app.include_router(admin_invoices.router)
 
     @app.get("/health", tags=["health"])
     async def health():

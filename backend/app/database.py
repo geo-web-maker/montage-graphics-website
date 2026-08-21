@@ -37,3 +37,6 @@ async def ensure_indexes() -> None:
     await db.work_images.create_index("client_id")
     await db.work_images.create_index([("client_id", 1), ("display_order", 1)])
     await db.reviews.create_index("display_order")
+    await db.invoices.create_index("public_id", unique=True)
+    await db.invoices.create_index("invoice_number", unique=True)
+    await db.invoices.create_index("created_at")
