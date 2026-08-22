@@ -100,23 +100,30 @@
   .footer-right { width: 45%; }
 
   .totals-row {
-    display: flex; align-items: center;
-    font-size: 13px; padding: 5px 20px;
+    display: table; width: 100%; box-sizing: border-box;
+    padding: 5px 20px;
+    font-size: 13px;
   }
-  .totals-row .label { font-weight: 600; width: 100px; flex-shrink: 0; }
-  .totals-row .colon { width: 24px; text-align: center; flex-shrink: 0; }
-  .totals-row .value { flex: 1; text-align: right; }
+  .totals-row .label,
+  .totals-row .colon,
+  .totals-row .value { display: table-cell; vertical-align: middle; }
+  .totals-row .label { font-weight: 600; width: 100px; }
+  .totals-row .colon { width: 24px; text-align: center; }
+  .totals-row .value { text-align: right; }
   .totals-row.gap-below { margin-bottom: 18px; }
 
   .totals-total {
-    display: flex; align-items: center;
+    display: table; width: 100%; box-sizing: border-box;
     background: #0b5c3f; color: #fff;
     padding: 14px 20px; border-radius: 14px;
     margin-top: 8px; font-weight: 700; font-size: 14px;
   }
-  .totals-total .label { width: 100px; flex-shrink: 0; }
-  .totals-total .colon { width: 24px; text-align: center; flex-shrink: 0; }
-  .totals-total .value { flex: 1; text-align: right; }
+  .totals-total .label,
+  .totals-total .colon,
+  .totals-total .value { display: table-cell; vertical-align: middle; }
+  .totals-total .label { width: 100px; }
+  .totals-total .colon { width: 24px; text-align: center; }
+  .totals-total .value { text-align: right; }
   .signature-block { text-align: right; margin-top: 12px; }
   .signature-block .name { font-weight: 700; font-size: 14px; }
   .signature-block .role { font-size: 12px; color: #444; }
