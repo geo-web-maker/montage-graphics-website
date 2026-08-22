@@ -162,7 +162,12 @@
     font-family: "EB Garamond", serif; font-size: 15px;
   }
   .admin-mobile-menu a.active { color: var(--danger); }
-  .admin-mobile-menu .btn-ghost { margin-top: 8px; align-self: flex-start; }
+  .admin-mobile-menu .btn-ghost {
+    margin-top: 8px; align-self: flex-start;
+    color: rgba(247, 246, 242, 0.75);
+    border-color: rgba(247, 246, 242, 0.3) !important;
+  }
+  .admin-mobile-menu .btn-ghost:hover { color: var(--panel); background: rgba(247, 246, 242, 0.08); }
   .admin-mobile-tabs {
     display: flex; gap: 0; border-bottom: 1px solid var(--line-strong); overflow-x: auto;
   }
