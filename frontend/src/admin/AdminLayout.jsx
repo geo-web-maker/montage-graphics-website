@@ -4,7 +4,10 @@ import React, { useState } from "react";
 // Desktop: fixed dark sidebar with "Col. 0N" coordinate-labeled nav.
 // Mobile: dark topbar + horizontal scrollable tab strip (sidebar has no
 // room to collapse to, so it's swapped out rather than hidden behind a
-// hamburger-only menu, matching what was approved).
+// hamburger-only menu, matching what was approved). The hamburger button
+// only opens account actions (change password / log out) — section
+// navigation lives solely in the tab strip below it, so the two never
+// duplicate the same list.
 //
 // ALL_SECTIONS order also drives the "Col. 0N" numbering — index + 1.
 const ALL_SECTIONS = [
@@ -75,25 +78,12 @@ export default function AdminLayout({
             <span className="brand">
               <b>Montage</b> Admin
             </span>
-            <button className="admin-hamburger" onClick={() => setMobileOpen((v) => !v)}>
+            <button className="admin-hamburger" aria-label="Account menu" onClick={() => setMobileOpen((v) => !v)}>
               ≡
             </button>
           </div>
           {mobileOpen && (
             <div className="admin-mobile-menu">
-              {sections.map((s) => (
-                <a
-                  key={s.id}
-                  href="#"
-                  className={s.id === activeSection ? "active" : ""}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    go(s.id);
-                  }}
-                >
-                  {s.label}
-                </a>
-              ))}
               <button className="btn-ghost" onClick={onChangePassword}>
                 Change password
               </button>
