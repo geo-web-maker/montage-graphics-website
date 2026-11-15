@@ -34,7 +34,7 @@ function Card({ skill, index }) {
   const c = toRgb(skill.accent_rgb || BRAND_ACCENT[skill.name]);
   return (
     <li className="reveal" style={{ "--d": `${index * 90}ms` }}>
-      <article className="sk-card" style={{ "--c": c, "--w": `${pct}%`, "--d": `${index * 90}ms` }}>
+      <article className="sk-card" tabIndex={0} style={{ "--c": c, "--w": `${pct}%`, "--d": `${index * 90}ms` }}>
         <div className="sk-meta mono">
           <span>Trk {String(index + 1).padStart(2, "0")}</span>
           <span className={skill.motion ? "mo" : ""}>{skill.motion ? "● Motion" : "Still"}</span>
