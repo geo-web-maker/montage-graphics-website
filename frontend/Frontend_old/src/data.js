@@ -45,14 +45,6 @@ export const BRAND_ACCENT = {
   Blender: "245,121,42", // Blender orange
 };
 
-export const PLATFORMS = [
-  { prefix: "Be", suffix: "hance" },
-  { prefix: "Free", suffix: "pik" },
-  { prefix: "Can", suffix: "va" },
-  { prefix: "Adobe ", suffix: "Stock", boldSuffix: true },
-  { prefix: "Shutter", suffix: "stock" },
-];
-
 export const CONTACT = {
   email: "montagegraphics@gmail.com",
   whatsapp: "+256 763675577 / +256 793740538",

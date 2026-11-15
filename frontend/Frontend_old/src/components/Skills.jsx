@@ -1,10 +1,8 @@
 import React from "react";
 import { SKILLS, BRAND_ACCENT } from "../data";
 
-// Drop real logo files into frontend/src/assets/skill-logos/ using these
-// exact filenames and they'll be picked up automatically — no code changes
-// needed. If a file for a given tool is missing, the colored initials
-// badge below is shown instead, so nothing breaks in the meantime.
+// Drop real logo files into src/assets/skill-logos/ with these names and they are picked up
+// at build time. A tool without a file gets the initials tile.
 const LOGO_FILES = {
   Photoshop: "photoshop.svg",
   Illustrator: "illustrator.svg",
@@ -14,88 +12,60 @@ const LOGO_FILES = {
   Canva: "canva.svg",
   Blender: "blender.svg",
 };
+const ABBR = { Photoshop: "Ps", Illustrator: "Ai", "After Effects": "Ae", "Cinema 4D": "C4", Figma: "Fi", Canva: "Ca", Blender: "Bl" };
 
-// Fallback badge (colored initials) shown until a real logo file exists,
-// or if one fails to load.
-const FALLBACK = {
-  Photoshop: { bg: "linear-gradient(150deg,#1f5fd6,#00194f)", label: "Ps" },
-  Illustrator: { bg: "linear-gradient(150deg,#ff9a3d,#7a3d00)", label: "Ai" },
-  "After Effects": { bg: "linear-gradient(150deg,#8a5cff,#2a1063)", label: "Ae" },
-  "Cinema 4D": { bg: "linear-gradient(150deg,#3a3f4a,#101216)", label: "C4" },
-  Figma: { bg: "linear-gradient(150deg,#ff5fa8,#3d7fff)", label: "Fi" },
-  Canva: { bg: "linear-gradient(150deg,#22c1c3,#0b5f60)", label: "Ca" },
-  Blender: { bg: "linear-gradient(150deg,#f5792a,#8a3d00)", label: "Bl" },
+const logoModules = import.meta.glob("../assets/skill-logos/*", { eager: true, query: "?url", import: "default" });
+const resolveLogoUrl = (filename) => {
+  const hit = Object.entries(logoModules).find(([path]) => path.endsWith(`/${filename}`));
+  return hit ? hit[1] : null;
 };
 
-// Vite's import.meta.glob pulls in whatever logo files actually exist in
-// the folder at build time — eager+url so each entry is just a resolved
-// file path, and nothing errors out if the folder is empty or a file for
-// one tool hasn't been added yet.
-const logoModules = import.meta.glob("../assets/skill-logos/*", {
-  eager: true,
-  query: "?url",
-  import: "default",
-});
-
-function resolveLogoUrl(filename) {
-  const match = Object.entries(logoModules).find(([path]) => path.endsWith(`/${filename}`));
-  return match ? match[1] : null;
+function toRgb(raw) {
+  if (!raw) return "61,127,255";
+  return raw.startsWith("#") ? [1, 3, 5].map((i) => parseInt(raw.slice(i, i + 2), 16)).join(",") : raw;
 }
 
-function SkillIcon({ name }) {
-  const logoUrl = resolveLogoUrl(LOGO_FILES[name]);
-  const fallback = FALLBACK[name] || { bg: "var(--panel-raised)", label: name[0] };
+const clampPct = (v) => Math.max(0, Math.min(100, Number(v) || 0));
 
-  if (logoUrl) {
-    return (
-      <div className="skill-icon skill-icon-logo">
-        <img src={logoUrl} alt={`${name} logo`} />
-      </div>
-    );
-  }
-
+function Card({ skill, index }) {
+  const logo = skill.logo_url || resolveLogoUrl(LOGO_FILES[skill.name]);
+  const abbr = skill.abbr || ABBR[skill.name] || skill.name.slice(0, 2);
+  const pct = clampPct(skill.pct);
+  const c = toRgb(skill.accent_rgb || BRAND_ACCENT[skill.name]);
   return (
-    <div className="skill-icon" style={{ background: fallback.bg }}>
-      {fallback.label}
-    </div>
+    <li className="reveal" style={{ "--d": `${index * 90}ms` }}>
+      <article className="sk-card" tabIndex={0} style={{ "--c": c, "--w": `${pct}%`, "--d": `${index * 90}ms` }}>
+        <div className="sk-meta mono">
+          <span>Trk {String(index + 1).padStart(2, "0")}</span>
+          <span className={skill.motion ? "mo" : ""}>{skill.motion ? "● Motion" : "Still"}</span>
+        </div>
+        <div className="sk-ico" aria-hidden="true">{logo ? <img src={logo} alt="" /> : abbr}</div>
+        <h3>{skill.name}</h3>
+        <div className="sk-meter" role="img" aria-label={`${skill.name}: ${pct}% mastery`}>
+          <i />
+          <b>{pct}%</b>
+        </div>
+      </article>
+    </li>
   );
 }
 
-export default function Skills() {
+export default function Skills({ skills = null }) {
+  const list = skills?.length ? skills : SKILLS;
+
   return (
-    <section className="skills" id="skills">
-      <div className="skills-inner">
-        <div className="skills-copy reveal">
-          <div className="label">Exhibit 04</div>
-          <h2 className="section-title">
-            Medium &amp; <b>Mastery</b>
-          </h2>
+    <section id="skills" style={{ paddingTop: 0 }}>
+      <div className="wrap">
+        <div className="stack-copy reveal">
+          <div><span className="mono"><b>Sequence 04</b> — The toolkit</span><h2>Medium &amp; <em>Mastery</em></h2></div>
           <p>
-            Popular skills and experiences, where each project is an
-            opportunity to combine creativity, technical precision, and
-            strategic vision to achieve real digital results.
+            Popular skills and experiences, where each project is an opportunity to combine
+            creativity, technical precision and strategic vision to achieve real digital results.
           </p>
         </div>
-
-        <div className="skills-grid reveal" data-reveal-delay="100">
-          {SKILLS.map((skill) => {
-            const accent = BRAND_ACCENT[skill.name] || "61,127,255";
-            return (
-              <div
-                className="skill-card"
-                key={skill.name}
-                style={{ "--accent": accent }}
-              >
-                <SkillIcon name={skill.name} />
-                <div className="skill-card-name">{skill.name}</div>
-                <div className="bar">
-                  <span style={{ width: `${skill.pct}%` }} />
-                </div>
-                <div className="skill-card-pct">{skill.pct}% mastery</div>
-              </div>
-            );
-          })}
-        </div>
+        <ul className="sk-grid">
+          {list.map((skill, i) => <Card skill={skill} index={i} key={skill.name} />)}
+        </ul>
       </div>
     </section>
   );
