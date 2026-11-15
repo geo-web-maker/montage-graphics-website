@@ -10,7 +10,6 @@ import WorkCarousel from "./components/WorkCarousel";
 import ExpandOverlay from "./components/ExpandOverlay";
 import About from "./components/About";
 import Skills from "./components/Skills";
-import Platforms from "./components/Platforms";
 import Reviews from "./components/Reviews";
 import Footer from "./components/Footer";
 import { useExpandCard } from "./hooks/useExpandCard";
@@ -52,7 +51,6 @@ export default function MontagePage() {
         <WorkCarousel clients={clients} ready={ready} onCardOpen={openExpand} />
         <About content={content} />
         <Skills skills={skills} />
-        <Platforms platforms={content?.platforms} />
         {content?.modules?.reviews !== false && <Reviews />}
       </main>
       <Footer content={content} />

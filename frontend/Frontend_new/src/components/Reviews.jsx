@@ -39,7 +39,7 @@ export default function Reviews() {
     <section id="reviews">
       <div className="wrap">
         <div className="sec-head reveal">
-          <div><span className="mono"><b>Sequence 06</b> — Client feedback</span><h2>Notes from <em>the edit</em></h2></div>
+          <div><span className="mono"><b>Sequence 05</b> — Client feedback</span><h2>Notes from <em>the edit</em></h2></div>
         </div>
         <div className="rev">
           {reviews.map((r, i) => (

@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import { SKILLS, BRAND_ACCENT } from "../data";
 
 // Drop real logo files into src/assets/skill-logos/ with these names and they are picked up
@@ -25,49 +25,33 @@ function toRgb(raw) {
   return raw.startsWith("#") ? [1, 3, 5].map((i) => parseInt(raw.slice(i, i + 2), 16)).join(",") : raw;
 }
 
-function Layer({ skill, index }) {
+const clampPct = (v) => Math.max(0, Math.min(100, Number(v) || 0));
+
+function Card({ skill, index }) {
   const logo = skill.logo_url || resolveLogoUrl(LOGO_FILES[skill.name]);
   const abbr = skill.abbr || ABBR[skill.name] || skill.name.slice(0, 2);
-  const pct = Math.max(0, Math.min(100, Number(skill.pct) || 0));
+  const pct = clampPct(skill.pct);
   const c = toRgb(skill.accent_rgb || BRAND_ACCENT[skill.name]);
   return (
-    <div className="layer" style={{ "--c": c }}>
-      <div className="who">
-        {logo ? (
-          <span className="ico"><img src={logo} alt="" /></span>
-        ) : (
-          <span className="ico fb" aria-hidden="true">{abbr}</span>
-        )}
-        <div>
-          <b>{skill.name}</b>
-          <small className={skill.motion ? "mo" : ""}>{skill.motion ? "● Motion" : "Still"}</small>
+    <li className="reveal" style={{ "--d": `${index * 90}ms` }}>
+      <article className="sk-card" style={{ "--c": c, "--w": `${pct}%`, "--d": `${index * 90}ms` }}>
+        <div className="sk-meta mono">
+          <span>Trk {String(index + 1).padStart(2, "0")}</span>
+          <span className={skill.motion ? "mo" : ""}>{skill.motion ? "● Motion" : "Still"}</span>
         </div>
-      </div>
-      <div className="track">
-        <div className="clip" style={{ "--w": `${pct}%`, "--d": `${index * 90}ms` }}>
-          <span>{pct}%</span>
+        <div className="sk-ico" aria-hidden="true">{logo ? <img src={logo} alt="" /> : abbr}</div>
+        <h3>{skill.name}</h3>
+        <div className="sk-meter" role="img" aria-label={`${skill.name}: ${pct}% mastery`}>
+          <i />
+          <b>{pct}%</b>
         </div>
-      </div>
-    </div>
+      </article>
+    </li>
   );
 }
 
 export default function Skills({ skills = null }) {
   const list = skills?.length ? skills : SKILLS;
-  const stack = useRef(null);
-  const scrub = useRef(null);
-
-  // amber scrub line follows the pointer over the track area (hover devices only)
-  const onPointerMove = (e) => {
-    if (e.pointerType === "touch") return;
-    const el = stack.current;
-    const line = scrub.current;
-    if (!el || !line) return;
-    const r = el.getBoundingClientRect();
-    const label = el.querySelector(".who")?.offsetWidth || 0; // real label-column width at any breakpoint
-    const x = Math.max(0, Math.min(r.width - label - 1, e.clientX - r.left - label));
-    line.style.setProperty("--x", `${x}px`);
-  };
 
   return (
     <section id="skills" style={{ paddingTop: 0 }}>
@@ -79,16 +63,9 @@ export default function Skills({ skills = null }) {
             creativity, technical precision and strategic vision to achieve real digital results.
           </p>
         </div>
-        <div className="stack reveal" ref={stack} onPointerMove={onPointerMove}>
-          <div className="stack-ruler">
-            <div className="mono">Layers</div>
-            <div className="ruler-scale mono"><span>0</span><span>25</span><span>50</span><span>75</span><span>100% mastery</span></div>
-          </div>
-          <div>
-            {list.map((skill, i) => <Layer skill={skill} index={i} key={skill.name} />)}
-          </div>
-          <div className="scrub" ref={scrub} aria-hidden="true" />
-        </div>
+        <ul className="sk-grid">
+          {list.map((skill, i) => <Card skill={skill} index={i} key={skill.name} />)}
+        </ul>
       </div>
     </section>
   );

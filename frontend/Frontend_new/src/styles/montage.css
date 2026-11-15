@@ -309,24 +309,6 @@
 .montage-root .shot .mono.r{left:auto;right:18px}
 
 /* skills = layer stack */
-.montage-root .stack{border:1px solid var(--line2);border-radius:6px;background:var(--panel);overflow:hidden;position:relative}
-.montage-root .stack-ruler{display:grid;grid-template-columns:clamp(150px,22vw,270px) 1fr;border-bottom:1px solid var(--line2);background:var(--panel2)}
-.montage-root .stack-ruler>div{padding:10px 16px}
-.montage-root .ruler-scale{display:flex;justify-content:space-between;border-left:1px solid var(--line)}
-.montage-root .layer{display:grid;grid-template-columns:clamp(150px,22vw,270px) 1fr;border-bottom:1px solid var(--line);position:relative}
-.montage-root .layer:last-of-type{border-bottom:0}
-.montage-root .layer .who{display:flex;align-items:center;gap:12px;padding:16px;border-right:1px solid var(--line)}
-.montage-root .ico{flex:none;width:34px;height:34px;border-radius:7px;display:grid;place-items:center;font-family:var(--mono);font-weight:500;font-size:12.5px;color:#fff;background:linear-gradient(150deg,rgb(var(--c)),rgba(var(--c),.35));box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
-.montage-root .who b{display:block;font-weight:500;font-size:15px;line-height:1.2}
-.montage-root .who small{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
-.montage-root .who small.mo{color:rgb(var(--c))}
-.montage-root .track{position:relative;padding:16px 0;background:repeating-linear-gradient(90deg,transparent 0 calc(10% - 1px),var(--line) calc(10% - 1px) 10%)}
-.montage-root .clip{position:absolute;top:14px;bottom:14px;left:0;width:0;border-radius:4px;background:linear-gradient(90deg,rgba(var(--c),.9),rgba(var(--c),.45));border:1px solid rgb(var(--c));transition:width 1.4s var(--ease);transition-delay:var(--d,0ms);display:flex;align-items:center;justify-content:flex-end;padding-right:10px;overflow:hidden}
-.montage-root .clip::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,.14) 0 2px,transparent 2px 16px);mask:linear-gradient(0deg,#000 0 22%,transparent 22%)}
-.montage-root .clip span{font-family:var(--mono);font-size:12px;color:#fff;position:relative;text-shadow:0 1px 6px rgba(0,0,0,.5)}
-.montage-root .in .clip,.montage-root .stack.in .clip{width:var(--w)}
-.montage-root .scrub{position:absolute;top:0;bottom:0;width:1px;left:calc(clamp(150px,22vw,270px) + var(--x,0px));background:var(--amber);pointer-events:none;opacity:0;transition:opacity .2s;z-index:5}
-.montage-root .stack:hover .scrub{opacity:1}
 .montage-root .stack-copy{display:grid;grid-template-columns:1fr 1fr;gap:clamp(20px,4vw,64px);align-items:end;margin-bottom:clamp(28px,4vw,48px)}
 .montage-root .stack-copy p{color:#b4b8c2;max-width:52ch;justify-self:end}
 
@@ -349,12 +331,6 @@
 .montage-root .tc .btn{padding:5px 6px 5px 18px;font-size:13px}
 .montage-root .tc .btn .ar{width:28px;height:28px;font-size:14px}
 @media (prefers-reduced-motion:reduce){.montage-root .btn::before,.montage-root .btn.ghost .ar::after{animation:none}}
-/* platforms */
-.montage-root .plat{border-block:1px solid var(--line)}
-.montage-root .plat-row{display:flex;flex-wrap:wrap;gap:12px 44px;align-items:baseline}
-.montage-root .plat-row span{font-family:var(--display);font-weight:300;font-style:italic;font-size:clamp(34px,5vw,72px);letter-spacing:-.03em;color:var(--dim);transition:color .3s}
-.montage-root .plat-row span b{font-weight:500;color:var(--ink)}
-.montage-root .plat-row span:hover{color:var(--blue-hi)}
 
 /* reviews */
 .montage-root .rev{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
@@ -485,9 +461,6 @@
   .montage-root .about{grid-template-columns:1fr;gap:28px}
 .montage-root .about .shot{max-width:540px}
 
-  /* SKILLS: smaller column */
-  .montage-root .layer,.montage-root .stack-ruler{grid-template-columns:clamp(100px,22vw,150px) 1fr}
-.montage-root .scrub{left:calc(clamp(100px,22vw,150px) + var(--x,0px))}
 .montage-root .stack-copy{grid-template-columns:1fr}
 .montage-root .stack-copy p{justify-self:start;max-width:100%}
 
@@ -518,13 +491,6 @@
 .montage-root .mk b{font-size:20px}
 .montage-root .mk .mono{display:none}
 
-  /* skills: narrow label column */
-  .montage-root .layer,.montage-root .stack-ruler{grid-template-columns:132px 1fr}
-.montage-root .scrub{left:calc(132px + var(--x,0px))}
-.montage-root .layer .who{padding:10px 8px;gap:7px}
-.montage-root .ico{width:26px;height:26px;font-size:10px;border-radius:6px}
-.montage-root .who b{font-size:12px}
-.montage-root .who small{display:none}
 
   /* footer CTA: stack buttons */
   .montage-root .credits .btns{flex-direction:column;align-items:center}
@@ -558,8 +524,6 @@
 .montage-root .wc-viewport{padding-top:16px}
 
 /* skills: real tool logos on a brand-accent tile */
-.montage-root .ico{width:42px;height:42px;border-radius:9px;padding:6px;background:rgba(var(--c),.14);border:1px solid rgba(var(--c),.55);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 6px 18px -10px rgb(var(--c))}
-.montage-root .ico img{width:100%;height:100%;object-fit:contain}
 
 /* collection controls (tablet only) */
 .montage-root .wc-ctl{display:none}
@@ -598,11 +562,6 @@
 .montage-root .tl-m .st.hit span{color:var(--dim)}
 }
 
-/* ── phone ≤640: collection becomes a vertical stack, timeline is rebuilt ── */
-@media (max-width:640px){
-
-  .montage-root .ico{width:34px;height:34px;padding:5px}
-}
 
 
 /* ═════════ Port notes: everything below overrides the raw mockup where the build spec
@@ -693,9 +652,6 @@ html:has(.montage-root){scroll-behavior:smooth}
 .montage-root .expand-grid .empty{color:rgba(255,255,255,.72)}
 .montage-root .expand-overlay[hidden]{display:none}
 
-/* platforms */
-.montage-root .plat{padding:clamp(56px,7vw,96px) 0}
-.montage-root .plat-row{margin-top:8px}
 
 /* reviews: submit form in the A6 language */
 .montage-root .review-empty{color:var(--dim);grid-column:1/-1}
@@ -708,8 +664,6 @@ html:has(.montage-root){scroll-behavior:smooth}
 .montage-root .review-submit .btn:disabled{opacity:.6;cursor:wait}
 .montage-root .review-submit [role=status]{color:var(--dim);font-size:15px}
 
-/* skills: initials fallback tile when a tool has no logo file */
-.montage-root .ico.fb{font-family:var(--mono);font-weight:500;font-size:12.5px;color:#fff;background:linear-gradient(150deg,rgb(var(--c)),rgba(var(--c),.35));display:grid;place-items:center}
 
 /* footer actions */
 .montage-root .credits .btn{max-width:100%}
@@ -719,7 +673,6 @@ html:has(.montage-root){scroll-behavior:smooth}
   .montage-root *,.montage-root *::before,.montage-root *::after{animation:none!important;transition:none!important}
   .montage-root h1 .line>span{transform:none}
   .montage-root .reveal{opacity:1;transform:none}
-  .montage-root .clip{width:var(--w)}
   .montage-root .rec{opacity:1}
   .montage-root .wc-track{animation:none!important}
   html:has(.montage-root){scroll-behavior:auto}
@@ -737,3 +690,30 @@ html:has(.montage-root){scroll-behavior:smooth}
   .montage-root .wc-track{display:grid;grid-template-columns:1fr}
   .montage-root .plate.dup{display:none}
 }
+
+/* skills = tool cards (edit-bay language: track label, clip-style mastery meter) */
+.montage-root .sk-grid{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,1.6vw,20px)}
+.montage-root .sk-card{--c:61,127,255;position:relative;display:grid;justify-items:center;gap:14px;height:100%;padding:16px clamp(14px,2vw,26px) clamp(16px,2vw,24px);border:1px solid var(--line2);border-radius:6px;background:linear-gradient(180deg,rgba(var(--c),.07),transparent 55%),repeating-linear-gradient(90deg,transparent 0 calc(10% - 1px),var(--line) calc(10% - 1px) 10%),var(--panel);transition:transform .45s var(--ease),border-color .3s,box-shadow .45s var(--ease)}
+.montage-root .sk-card::before{content:"";position:absolute;left:-1px;top:-1px;width:26px;height:26px;border-top:2px solid rgb(var(--c));border-left:2px solid rgb(var(--c));border-top-left-radius:6px;opacity:.55;transition:opacity .3s}
+.montage-root .sk-card:hover{transform:translateY(-6px);border-color:rgb(var(--c));box-shadow:0 26px 50px -24px rgba(var(--c),.6)}
+.montage-root .sk-card:hover::before{opacity:1}
+.montage-root .sk-meta{width:100%;display:flex;justify-content:space-between;font-size:10px}
+.montage-root .sk-meta .mo{color:rgb(var(--c))}
+.montage-root .sk-ico{width:clamp(52px,6vw,68px);aspect-ratio:1;display:grid;place-items:center;margin-top:6px;padding:11px;border-radius:14px;background:rgba(var(--c),.14);border:1px solid rgba(var(--c),.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 10px 26px -14px rgb(var(--c));font-family:var(--mono);font-weight:500;font-size:20px;color:rgb(var(--c));transition:transform .5s var(--ease)}
+.montage-root .sk-ico img{width:100%;height:100%;object-fit:contain}
+.montage-root .sk-card:hover .sk-ico{transform:scale(1.08) rotate(-3deg)}
+.montage-root .sk-card h3{font-family:var(--display);font-weight:400;font-size:clamp(18px,2vw,24px);letter-spacing:-.005em;line-height:1.1;text-align:center}
+.montage-root .sk-meter{position:relative;width:100%;display:grid;place-items:center;padding:12px 0;border-radius:6px;background:var(--bg);border:1px solid var(--line);overflow:hidden;isolation:isolate}
+.montage-root .sk-meter i{position:absolute;inset:0 auto 0 0;width:0;z-index:-1;background:linear-gradient(90deg,rgba(var(--c),.9),rgba(var(--c),.45));border-right:2px solid var(--amber);transition:width 1.3s var(--ease);transition-delay:calc(var(--d,0ms) + 250ms)}
+.montage-root .sk-meter i::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,.14) 0 2px,transparent 2px 14px);mask:linear-gradient(0deg,#000 0 24%,transparent 24%);-webkit-mask:linear-gradient(0deg,#000 0 24%,transparent 24%)}
+.montage-root .sk-meter b{font-family:var(--mono);font-weight:500;font-size:14px;letter-spacing:.04em;color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.6)}
+.montage-root .in .sk-meter i{width:var(--w)}
+@media (max-width:1080px){.montage-root .sk-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:640px){
+  .montage-root .sk-card{gap:10px;padding:12px 10px 14px}
+  .montage-root .sk-meta{font-size:9px}
+  .montage-root .sk-meter{padding:9px 0}
+  .montage-root .sk-meter b{font-size:12px}
+}
+@media (hover:none){.montage-root .sk-card:hover{transform:none;box-shadow:none;border-color:var(--line2)}}
+@media (prefers-reduced-motion:reduce){.montage-root .sk-meter i{width:var(--w)}.montage-root .sk-card:hover{transform:none}}
