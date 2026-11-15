@@ -620,11 +620,10 @@ html:has(.montage-root){scroll-behavior:smooth}
 }
 /* tablet 641-1080: draggable strip, arrows, progress bar, snap proximity, no duplicates */
 @media (max-width:1080px){
-  .montage-root .wc-viewport{overflow-x:auto;overflow-y:hidden;scroll-snap-type:x proximity;overscroll-behavior-x:contain;scrollbar-width:none;cursor:grab;-webkit-overflow-scrolling:touch;touch-action:pan-y pinch-zoom;padding:16px 0 12px}
+  .montage-root .wc-viewport{overflow-x:auto;overflow-y:hidden;scroll-snap-type:none;overscroll-behavior-x:contain;scrollbar-width:none;cursor:grab;-webkit-overflow-scrolling:touch;touch-action:pan-y pinch-zoom;padding:16px 0 12px}
   .montage-root .wc-viewport::-webkit-scrollbar{display:none}
   .montage-root .wc-track{animation:none;padding:0 var(--gut);gap:20px}
   .montage-root .plate{flex:0 0 min(42vw,320px);width:min(42vw,320px);scroll-snap-align:start}
-  .montage-root .plate.dup{display:none}
   .montage-root .wc-ctl{display:flex}
   .montage-root .wc-progress{display:block}
   .montage-root .scroll-note{display:block}
@@ -721,3 +720,21 @@ html:has(.montage-root){scroll-behavior:smooth}
 }
 @media (hover:none){.montage-root .sk-card:hover{transform:none}}
 @media (prefers-reduced-motion:reduce){.montage-root .sk-meter i{width:var(--w)}.montage-root .sk-card:hover{transform:none}}
+
+/* tablet + reduced motion: no auto-scroll, so hide the duplicated half and restore snapping */
+@media (prefers-reduced-motion:reduce) and (min-width:641px) and (max-width:1080px){
+  .montage-root .plate.dup{display:none}
+  .montage-root .wc-viewport{scroll-snap-type:x proximity}
+}
+
+/* collection plates: level light-box panels. They stay on one line; a soft glow brightens on hover */
+.montage-root .plate{--glow:34px;--lb:color-mix(in srgb,var(--dom),#fff 22%)}
+.montage-root .plate .frame{transform:none;box-shadow:0 0 var(--glow) -10px color-mix(in srgb,var(--lb) 55%,transparent),0 18px 36px -26px rgba(0,0,0,.8);transition:box-shadow .6s var(--ease),filter .6s var(--ease)}
+.montage-root .plate .frame::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 0%,rgba(255,255,255,.16),transparent 62%),linear-gradient(0deg,rgba(255,255,255,.05),transparent 40%);opacity:.5;transition:opacity .6s var(--ease);pointer-events:none}
+.montage-root .plate .frame .logo{position:relative;z-index:1}
+.montage-root .plate:hover .frame,.montage-root .plate:focus-visible .frame{transform:none;filter:brightness(1.1);box-shadow:0 0 calc(var(--glow)*1.8) -2px color-mix(in srgb,var(--lb) 90%,transparent),0 0 0 1px rgba(255,255,255,.18)}
+.montage-root .plate:hover .frame::before,.montage-root .plate:focus-visible .frame::before{opacity:1}
+.montage-root .plate:hover .frame::after{border-color:rgba(255,255,255,.28)}
+@media (min-width:641px){.montage-root .wc-viewport{padding-top:56px;padding-bottom:60px;margin-block:-40px -36px}}
+@media (max-width:640px){.montage-root .plate{--glow:20px}}
+@media (hover:none){.montage-root .plate:hover .frame{filter:none}}

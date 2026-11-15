@@ -1,14 +1,27 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 const pad = (n) => String(n).padStart(2, "0");
 const DRAG_PX = 5;
+const AUTO_SPEED = 0.045; // px per ms for the tablet auto-scroll (~45px/s)
+const RESUME_MS = 2500; // auto-scroll waits this long after the visitor lets go
+
+// Length of one full loop of the strip (px), or 0 when the duplicated half is hidden / not a scroller.
+const loopLen = (el) => {
+  if (!el || getComputedStyle(el).overflowX !== "auto") return 0;
+  const plates = el.querySelectorAll(".plate");
+  const mid = plates[plates.length / 2];
+  if (!mid || getComputedStyle(mid).display === "none") return 0;
+  return mid.offsetLeft - plates[0].offsetLeft;
+};
 
 /**
  * The Collection. One DOM, three behaviours (CSS decides, see montage.css):
  *  - desktop > 1080: auto-scrolling marquee over a duplicated list, pauses on hover/focus/touch
  *  - tablet 641-1080: draggable strip (mouse drag + native touch), arrows, progress bar, snap
  *  - phone <= 640: vertical stack, one plate per row
- * The duplicated plates are aria-hidden, unfocusable and display:none below 1081px.
+ * Tablet also auto-scrolls (JS, seamless loop over the duplicated half); it pauses while the visitor
+ *    hovers, touches, drags, focuses or uses the arrows, then resumes. Phone: duplicates stay for the vertical loop.
+ * Duplicated plates are aria-hidden and unfocusable.
  */
 export default function WorkCarousel({ clients = [], ready = true, onCardOpen }) {
   const viewport = useRef(null);
@@ -16,6 +29,7 @@ export default function WorkCarousel({ clients = [], ready = true, onCardOpen })
   const [progress, setProgress] = useState(0);
   const [dragging, setDragging] = useState(false);
   const [touched, setTouched] = useState(false);
+  const auto = useRef({ hover: false, hold: false, resumeAt: 0 });
   const n = clients.length;
 
   const items = useMemo(() => {
@@ -25,11 +39,39 @@ export default function WorkCarousel({ clients = [], ready = true, onCardOpen })
     return [...half, ...half];
   }, [clients, n]);
 
+  // tablet auto-scroll: one rAF loop, no React renders per frame
+  useEffect(() => {
+    const el = viewport.current;
+    if (!el || !n) return undefined;
+    const tablet = window.matchMedia("(min-width: 641px) and (max-width: 1080px)");
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let raf = 0;
+    let last = 0;
+    let pos = null;
+    const tick = (t) => {
+      raf = requestAnimationFrame(tick);
+      const dt = last ? Math.min(t - last, 64) : 0;
+      last = t;
+      const a = auto.current;
+      const L = tablet.matches && !reduce.matches && !document.hidden ? loopLen(el) : 0;
+      if (!L || a.hover || a.hold || performance.now() < a.resumeAt) { pos = null; return; }
+      if (pos === null) pos = el.scrollLeft;
+      pos += dt * AUTO_SPEED;
+      if (pos >= L) pos -= L;
+      el.scrollLeft = pos;
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [n]);
+
+  const letGo = () => { auto.current.hold = false; auto.current.resumeAt = performance.now() + RESUME_MS; };
+
   const updateProgress = () => {
     const el = viewport.current;
     if (!el) return;
+    const L = loopLen(el);
     const max = el.scrollWidth - el.clientWidth;
-    const next = max > 0 ? el.scrollLeft / max : 0;
+    const next = L ? (el.scrollLeft % L) / L : max > 0 ? el.scrollLeft / max : 0;
     setProgress((prev) => (Math.abs(prev - next) > 0.002 ? next : prev));
   };
 
@@ -44,6 +86,7 @@ export default function WorkCarousel({ clients = [], ready = true, onCardOpen })
     // a fresh gesture always clears the previous one, so a drag that ended off a plate can never
     // swallow the next genuine click
     drag.current = { down: true, startX: e.clientX, scrollLeft: el.scrollLeft, moved: false };
+    auto.current.hold = true;
   };
   const onPointerMove = (e) => {
     const d = drag.current;
@@ -60,6 +103,7 @@ export default function WorkCarousel({ clients = [], ready = true, onCardOpen })
   const endDrag = (e) => {
     if (!drag.current.down) return;
     drag.current.down = false;
+    letGo();
     setDragging(false);
     try { viewport.current?.releasePointerCapture?.(e.pointerId); } catch { /* not captured */ }
   };
@@ -74,6 +118,7 @@ export default function WorkCarousel({ clients = [], ready = true, onCardOpen })
   const step = (dir) => {
     const el = viewport.current;
     if (!el) return;
+    auto.current.resumeAt = performance.now() + RESUME_MS * 1.5;
     const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
     el.scrollBy({ left: dir * Math.max(240, el.clientWidth * 0.72), behavior });
   };
@@ -106,8 +151,12 @@ export default function WorkCarousel({ clients = [], ready = true, onCardOpen })
             onPointerCancel={endDrag}
             onClickCapture={onClickCapture}
             onScroll={updateProgress}
-            onTouchStart={() => setTouched(true)}
-            onTouchEnd={() => setTouched(false)}
+            onPointerEnter={(e) => { if (e.pointerType === "mouse") auto.current.hover = true; }}
+            onPointerLeave={(e) => { if (e.pointerType === "mouse") { auto.current.hover = false; letGo(); } }}
+            onFocus={() => { auto.current.hold = true; }}
+            onBlur={letGo}
+            onTouchStart={() => { auto.current.hold = true; setTouched(true); }}
+            onTouchEnd={() => { letGo(); setTouched(false); }}
           >
             <div className="wc-track">
               {items.map((card, i) => {
@@ -145,7 +194,7 @@ export default function WorkCarousel({ clients = [], ready = true, onCardOpen })
           </div>
           <div className="scroll-note">
             <span className="d-only">Auto-scrolling · hover to pause</span>
-            <span className="t-only">Drag or use the arrows to browse</span>
+            <span className="t-only">Auto-scrolling · drag or use the arrows</span>
             <span className="m-only">Auto-scrolling · tap to pause</span>
           </div>
         </>
