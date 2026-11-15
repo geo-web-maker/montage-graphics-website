@@ -4,6 +4,7 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 from app.core.deps import get_current_admin
 from app.core.rate_limit import limiter
 from app.core.security import create_access_token, hash_password, verify_password
+from app.core.turnstile import verify_turnstile
 from app.database import get_database
 from app.schemas.admin_user import ChangePasswordRequest
 from app.schemas.auth import LoginRequest, TokenResponse
@@ -14,6 +15,8 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 @router.post("/login", response_model=TokenResponse)
 @limiter.limit("5/minute")
 async def login(request: Request, payload: LoginRequest, db: AsyncIOMotorDatabase = Depends(get_database)):
+    await verify_turnstile(payload.turnstile_token, request)
+
     user = await db.admin_users.find_one({"email": payload.email})
     valid_password = user is not None and verify_password(payload.password, user["password_hash"])
 

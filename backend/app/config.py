@@ -31,6 +31,11 @@ class Settings(BaseSettings):
     # EgoSMS API. Must be explicitly set False on Render.
     sms_debug_mode: bool = True
 
+    # Cloudflare Turnstile (secret key; the site key lives in the frontends).
+    # Empty = protected endpoints refuse requests (fail closed). For local dev use
+    # Cloudflare's test secret 1x0000000000000000000000000000000AA (always passes).
+    turnstile_secret_key: str = ""
+
     # CORS - comma-separated list of allowed frontend origins
     cors_origins: str = "http://localhost:5173"
 

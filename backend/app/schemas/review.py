@@ -11,6 +11,15 @@ class ReviewCreate(BaseModel):
     is_visible: bool = True
 
 
+class ReviewSubmit(BaseModel):
+    """Public, unauthenticated submission. Always stored hidden for moderation."""
+
+    who: str = Field(min_length=2, max_length=160)
+    role: str = Field(default="", max_length=160)
+    quote: str = Field(min_length=12, max_length=3000)
+    turnstile_token: str | None = None
+
+
 class ReviewUpdate(BaseModel):
     quote: str | None = None
     who: str | None = None

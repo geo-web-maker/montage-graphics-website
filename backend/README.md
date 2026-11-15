@@ -139,3 +139,10 @@ Dockerfile's `CMD` handles it, but Render still needs `$PORT` respected;
 if your plan requires binding to Render's injected port, override the
 `CMD` to `uvicorn app.main:app --host 0.0.0.0 --port $PORT` in the
 service settings.
+
+## Cloudflare Turnstile
+
+`POST /auth/login` and `POST /reviews/submit` require a `turnstile_token` in the JSON body, verified
+server-side in `app/core/turnstile.py` (fails closed if `TURNSTILE_SECRET_KEY` is unset or Cloudflare is
+unreachable). Public submissions are stored with `is_visible=false` and published from the admin dashboard.
+`CORS_ORIGINS` must include the admin PWA origin and `https://localhost` (Capacitor).
