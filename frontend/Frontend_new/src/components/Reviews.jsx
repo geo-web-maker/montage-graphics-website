@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getReviews, submitReview } from "../api/client";
+import Turnstile, { turnstileEnabled } from "./Turnstile";
 
 export default function Reviews() {
   const [reviews, setReviews] = useState([]);
@@ -7,6 +8,8 @@ export default function Reviews() {
   const [form, setForm] = useState({ who: "", role: "", quote: "" });
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
+  const [token, setToken] = useState(null);
+  const [resetKey, setResetKey] = useState(0);
 
   useEffect(() => {
     getReviews()
@@ -20,13 +23,14 @@ export default function Reviews() {
     setBusy(true);
     setNotice("");
     try {
-      await submitReview(form);
+      await submitReview({ ...form, turnstile_token: token });
       setForm({ who: "", role: "", quote: "" });
       setNotice("Thank you. Your review has been submitted for moderation.");
     } catch (err) {
       setNotice(err.message);
     } finally {
       setBusy(false);
+      setResetKey((k) => k + 1);
     }
   }
   const set = (key) => (e) => setForm({ ...form, [key]: e.target.value });
@@ -51,7 +55,8 @@ export default function Reviews() {
           <label>Your name<input required minLength={2} maxLength={160} value={form.who} onChange={set("who")} /></label>
           <label>Role or company (optional)<input maxLength={160} value={form.role} onChange={set("role")} /></label>
           <label>Your review<textarea required minLength={12} maxLength={3000} rows={4} value={form.quote} onChange={set("quote")} /></label>
-          <button type="submit" className="btn" disabled={busy}>{busy ? "Submitting…" : <>Submit review<i className="ar">→</i></>}</button>
+          <Turnstile onToken={setToken} resetKey={resetKey} theme="dark" />
+          <button type="submit" className="btn" disabled={busy || (turnstileEnabled && !token)}>{busy ? "Submitting…" : <>Submit review<i className="ar">→</i></>}</button>
           {notice && <p role="status">{notice}</p>}
         </form>
       </div>

@@ -1,12 +1,16 @@
 import React, { useState } from "react";
+import Turnstile, { turnstileEnabled } from "./Turnstile";
 
 export default function Login({ onSubmit, error, loading }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [token, setToken] = useState(null);
+  const [resetKey, setResetKey] = useState(0);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    onSubmit(email, password);
+    await onSubmit(email, password, token);
+    setResetKey((k) => k + 1); // tokens are single-use
   }
 
   return (
@@ -33,8 +37,9 @@ export default function Login({ onSubmit, error, loading }) {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
+            <Turnstile onToken={setToken} resetKey={resetKey} theme="light" />
             {error && <p className="admin-error">{error}</p>}
-            <button className="btn-primary" type="submit" disabled={loading}>
+            <button className="btn-primary" type="submit" disabled={loading || (turnstileEnabled && !token)}>
               {loading ? "Signing in..." : "Sign in"}
             </button>
           </form>

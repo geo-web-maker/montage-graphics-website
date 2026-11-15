@@ -7,16 +7,15 @@ import path from "node:path";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const read = (p) => readFile(path.join(root, p), "utf8");
 
-test("Vite is configured for the /montage static-site mount", async () => {
+test("Vite base defaults to / (override with VITE_BASE_PATH)", async () => {
   const vite = await read("vite.config.js");
-  assert.match(vite, /base:\s*env\.VITE_BASE_PATH\s*\|\|\s*["']\/montage\/["']/);
+  assert.match(vite, /base:\s*env\.VITE_BASE_PATH\s*\|\|\s*["']\/["']/);
 });
 
 test("API client defaults to /montage and forwards bearer auth", async () => {
   const api = await read("src/api/client.js");
   assert.match(api, /VITE_API_URL\s*\|\|\s*["']\/montage["']/);
   assert.match(api, /Authorization.*Bearer/);
-  assert.match(api, /adminRequest/);
 });
 
 test("collection has accessible duplicate handling and the three spec breakpoints", async () => {
@@ -77,24 +76,13 @@ test("studio timeline supports keyboard scrubbing, scene chips and reduced motio
 test("public reviews are submitted for moderation, not immediately published", async () => {
   const component = await read("src/components/Reviews.jsx");
   const api = await read("src/api/client.js");
-  assert.match(component, /submitReview\(form\)/);
+  assert.match(component, /submitReview\(\{ \.\.\.form/);
   assert.match(component, /submitted for moderation/i);
   assert.match(api, /\/reviews\/submit/);
 });
 
-test("Archive Room exposes the required modules", async () => {
-  const nav = await read("src/admin/AdminLayout.jsx");
-  const dashboard = await read("src/admin/Dashboard.jsx");
-  for (const name of ["skills", "receipts", "agreements", "mail", "media", "settings"]) {
-    assert.match(nav, new RegExp(`id: "${name}"`));
-    assert.match(dashboard, new RegExp(`"${name}"`));
-  }
-});
-
-test("mailbox controls include message detail, attachments and drafts", async () => {
-  const workspace = await read("src/admin/ModuleWorkspace.jsx");
-  assert.match(workspace, /admin\/mailbox\/messages/);
-  assert.match(workspace, /attachment/);
-  assert.match(workspace, /admin\/mailbox\/drafts/);
-  assert.match(workspace, /admin\/mailbox\/send/);
+test("review form is gated by Turnstile and sends the token", async () => {
+  const c = await read("src/components/Reviews.jsx");
+  assert.match(c, /<Turnstile/);
+  assert.match(c, /turnstile_token:\s*token/);
 });

@@ -53,11 +53,11 @@ export default function useAdminAuth() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const login = useCallback(async (username, password) => {
+  const login = useCallback(async (username, password, turnstileToken) => {
     setLoading(true);
     setError(null);
     try {
-      const { access_token, role: nextRole, must_change_password } = await loginRequest(username, password);
+      const { access_token, role: nextRole, must_change_password } = await loginRequest(username, password, turnstileToken);
       sessionStorage.setItem(STORAGE_KEY, access_token);
       if (nextRole) sessionStorage.setItem(ROLE_KEY, nextRole);
       sessionStorage.setItem(MUST_CHANGE_KEY, String(Boolean(must_change_password)));

@@ -1,0 +1,6 @@
+{
+  "appId": "ug.montage.admin",
+  "appName": "Montage Admin",
+  "webDir": "dist",
+  "server": { "androidScheme": "https" }
+}
