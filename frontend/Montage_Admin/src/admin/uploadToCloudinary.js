@@ -10,6 +10,13 @@ const MAX_DIMENSION = 2000; // px, longest edge
 const JPEG_QUALITY = 0.85;
 const COMPRESS_THRESHOLD_BYTES = 2 * 1024 * 1024; // skip work already small enough
 
+// Motion-graphics videos go to Cloudinary untouched (re-encoding in the
+// browser would wreck quality). Cloudinary's free plan caps a single video
+// upload at 100MB, so reject bigger files up front with a clear message
+// instead of letting the upload fail halfway.
+export const MAX_VIDEO_BYTES = 100 * 1024 * 1024;
+export const isVideoFile = (file) => !!file?.type?.startsWith("video/");
+
 async function compressImage(file) {
   if (file.size <= COMPRESS_THRESHOLD_BYTES) return file;
 
@@ -42,8 +49,14 @@ async function compressImage(file) {
 // need this, so it stays off by default.
 
 export async function uploadToCloudinary(token, file, { forLogo = false } = {}) {
-  const uploadFile = forLogo ? file : await compressImage(file);
-  
+  const isVideo = !forLogo && isVideoFile(file);
+  if (isVideo && file.size > MAX_VIDEO_BYTES) {
+    throw new Error(
+      `Video is ${(file.size / 1048576).toFixed(0)}MB — the limit is 100MB. Export a smaller/H.264 version and retry.`
+    );
+  }
+  const uploadFile = forLogo || isVideo ? file : await compressImage(file);
+
   const { timestamp, signature, api_key, cloud_name, folder, colors } =
     await getUploadSignature(token, { forLogo });
 
@@ -55,7 +68,7 @@ export async function uploadToCloudinary(token, file, { forLogo = false } = {}) 
   formData.append("folder", folder);
   if (colors) formData.append("colors", colors);
 
-  const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/${isVideo ? "video" : "image"}/upload`, {
     method: "POST",
     body: formData,
   });
@@ -113,7 +126,15 @@ export async function uploadToCloudinary(token, file, { forLogo = false } = {}) 
     parsedColors[0]?.rgbHex ??
     null;
 
-  const asset = { url: data.secure_url, public_id: data.public_id, kind: "image", width: data.width, height: data.height, bytes: data.bytes };
+  const asset = { url: data.secure_url, public_id: data.public_id, kind: isVideo ? "video" : "image", width: data.width, height: data.height, bytes: data.bytes };
   try { await registerMedia(token, asset); } catch (error) { console.warn("Media registry update failed:", error.message); }
-  return { url: data.secure_url, public_id: data.public_id, width: data.width, height: data.height, dominantColor };
+  return {
+    url: data.secure_url,
+    public_id: data.public_id,
+    width: data.width,
+    height: data.height,
+    dominantColor,
+    mediaType: isVideo ? "video" : "image",
+    duration: isVideo && typeof data.duration === "number" ? data.duration : null,
+  };
 }

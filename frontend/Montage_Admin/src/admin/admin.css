@@ -805,3 +805,11 @@
 @media(max-width:640px){.invoice-filters{display:grid;grid-template-columns:1fr}.admin-invoice-info{display:grid;grid-template-columns:1fr 1fr;gap:6px}.admin-invoice-actions{display:flex;flex-wrap:wrap}.receipt-sheet{padding:18px}}
 .client-live-preview{display:grid;gap:8px}.client-live-preview>span{font-size:11px;text-transform:uppercase;color:var(--ink-dim)}.client-live-preview>div{aspect-ratio:5/4;max-width:260px;display:grid;place-items:center;color:white;font-size:12px;padding:12px}.client-live-preview img{max-width:80%;max-height:80%;object-fit:contain}
 .review-admin-tabs{display:flex;gap:6px;margin:18px 0;flex-wrap:wrap}.review-admin-tabs button{min-height:40px;padding:8px 14px;border:1px solid var(--line);background:transparent;color:var(--ink-dim)}.review-admin-tabs button.active{background:var(--forest);color:white}.review-edit{display:grid;gap:8px;min-width:min(320px,100%)}.review-edit input,.review-edit textarea{padding:8px;border:1px solid var(--line);background:white}
+
+/* Video work items in the client list */
+.admin-video-thumb { position: relative; }
+.admin-video-thumb video { display: block; width: 100%; max-height: 220px; background: #000; border-radius: 4px; }
+.admin-work-tile.shape-banner .admin-video-thumb video { aspect-ratio: 2 / 1; object-fit: cover; }
+.admin-work-tile.shape-tall .admin-video-thumb video { aspect-ratio: 3 / 4; object-fit: cover; }
+.admin-work-tile.is-hidden .admin-video-thumb video { opacity: .35; filter: grayscale(1); }
+.admin-video-badge { position: absolute; left: 6px; top: 6px; padding: 2px 7px; border-radius: 3px; background: rgba(0,0,0,.72); color: #fff; font: 600 10px/1.4 ui-monospace, monospace; letter-spacing: .08em; pointer-events: none; }

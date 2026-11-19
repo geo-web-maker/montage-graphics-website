@@ -86,3 +86,14 @@ test("review form is gated by Turnstile and sends the token", async () => {
   assert.match(c, /<Turnstile/);
   assert.match(c, /turnstile_token:\s*token/);
 });
+
+test("expanded set renders video work through MotionTile (muted, looping, inline, paused off-screen)", async () => {
+  const overlay = await read("src/components/ExpandOverlay.jsx");
+  const tile = await read("src/components/MotionTile.jsx");
+  assert.match(overlay, /media_type === "video"/);
+  assert.match(tile, /IntersectionObserver/);
+  assert.match(tile, /\bmuted\b/);
+  assert.match(tile, /\bloop\b/);
+  assert.match(tile, /playsInline/);
+  assert.match(tile, /prefers-reduced-motion/);
+});

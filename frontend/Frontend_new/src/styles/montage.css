@@ -738,3 +738,16 @@ html:has(.montage-root){scroll-behavior:smooth}
 @media (min-width:641px){.montage-root .wc-viewport{padding-top:56px;padding-bottom:60px;margin-block:-40px -36px}}
 @media (max-width:640px){.montage-root .plate{--glow:20px}}
 @media (hover:none){.montage-root .plate:hover .frame{filter:none}}
+
+/* Motion-graphics pieces in the expanded set */
+.montage-root .expand-grid .tile .motion{position:relative;display:block;width:100%;background:#0b0c0f}
+.montage-root .expand-grid .tile .motion video{display:block;width:100%;height:100%;object-fit:cover;cursor:pointer;background:#0b0c0f}
+.montage-root .expand-grid .tile .motion:not([style]) video{height:auto;min-height:160px}
+.montage-root .motion-badge{position:absolute;left:10px;top:10px;background:rgba(11,12,15,.7);padding:3px 8px;border-radius:2px;font:500 10px var(--mono);letter-spacing:.1em;color:#fff;pointer-events:none}
+.montage-root .motion-ctl{position:absolute;right:10px;bottom:10px;display:flex;gap:6px;opacity:0;transform:translateY(4px);transition:opacity .2s,transform .2s}
+.montage-root .motion:hover .motion-ctl,.montage-root .motion:focus-within .motion-ctl{opacity:1;transform:none}
+@media (hover:none){.montage-root .motion-ctl{opacity:1;transform:none}}
+.montage-root .motion-ctl button{width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:rgba(11,12,15,.72);color:#fff;font-size:13px;line-height:1;cursor:pointer;display:grid;place-items:center}
+.montage-root .motion-ctl button:hover{background:rgba(11,12,15,.9);border-color:rgba(255,255,255,.6)}
+.montage-root .motion-ctl button:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.montage-root .expand-grid .tile .motion-fallback{display:block;padding:28px 16px;background:rgba(255,255,255,.06);color:#fff;text-align:center;text-decoration:none;font:500 12px var(--mono);letter-spacing:.08em}

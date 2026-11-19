@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getClientWork } from "../api/client";
+import MotionTile from "./MotionTile";
 
 /**
  * Full-screen gallery for one client. The plate grows to fill the screen (useExpandCard), then the
@@ -68,7 +69,9 @@ export default function ExpandOverlay({ expanded, filled, gridVisible, overlaySt
             <div className="expand-grid">
               {work.map((img, i) => (
                 <div className="tile" style={{ "--d": `${Math.min(i, 10) * 70}ms` }} key={img.id}>
-                  <img src={img.image_url} alt={img.caption || `${name} work ${i + 1}`} loading="lazy" />
+                  {img.media_type === "video"
+                    ? <MotionTile item={img} name={name} index={i} />
+                    : <img src={img.image_url} alt={img.caption || `${name} work ${i + 1}`} loading="lazy" />}
                   {img.caption && <span className="cp">{img.caption}</span>}
                 </div>
               ))}

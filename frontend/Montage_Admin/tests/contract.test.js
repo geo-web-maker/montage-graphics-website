@@ -36,3 +36,12 @@ test("admin login is gated by Turnstile and sends the token", async () => {
   assert.match(login, /<Turnstile/);
   assert.match(api, /turnstile_token/);
 });
+
+test("admin work uploader supports video (100MB cap, video endpoint, media_type sent to API)", async () => {
+  const upload = await read("src/admin/uploadToCloudinary.js");
+  const form = await read("src/admin/WorkImageForm.jsx");
+  assert.match(upload, /MAX_VIDEO_BYTES\s*=\s*100 \* 1024 \* 1024/);
+  assert.match(upload, /"video" : "image"\}\/upload/);
+  assert.match(form, /media_type:\s*mediaType/);
+  assert.match(form, /video\/mp4/);
+});

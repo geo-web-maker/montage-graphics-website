@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { addWorkImage } from "../api/client";
-import { uploadToCloudinary } from "./uploadToCloudinary";
+import { uploadToCloudinary, isVideoFile } from "./uploadToCloudinary";
 
 // One entry per selected file, tracked independently so a single failure
 // doesn't block the rest of the batch and the admin can see exactly which
@@ -29,7 +29,7 @@ export default function WorkImageForm({ token, clients, onAdded }) {
   async function handleSubmit(e) {
     e.preventDefault();
     if (!clientId || queue.length === 0) {
-      setError("Pick a client and at least one image first");
+      setError("Pick a client and at least one image or video first");
       return;
     }
     setBusy(true);
@@ -43,12 +43,14 @@ export default function WorkImageForm({ token, clients, onAdded }) {
       if (item.status === "done") continue; // allow retrying a partial batch
       updateItem(item.id, { status: "uploading", error: null });
       try {
-        const { url, width, height } = await uploadToCloudinary(token, item.file);
+        const { url, width, height, mediaType, duration } = await uploadToCloudinary(token, item.file);
         const workImage = await addWorkImage(token, clientId, {
           image_url: url,
           caption,
           width,
           height,
+          media_type: mediaType,
+          ...(duration != null ? { duration } : {}),
         });
         updateItem(item.id, { status: "done" });
         onAdded(workImage);
@@ -71,7 +73,7 @@ export default function WorkImageForm({ token, clients, onAdded }) {
 
   return (
     <div className="admin-card">
-      <h2>Add work images</h2>
+      <h2>Add work (images &amp; motion videos)</h2>
       <form className="admin-form" onSubmit={handleSubmit}>
         <div className="admin-field">
           <label>Client</label>
@@ -87,19 +89,19 @@ export default function WorkImageForm({ token, clients, onAdded }) {
           </select>
         </div>
         <div className="admin-field">
-          <label>Caption (optional, applied to all selected images)</label>
+          <label>Caption (optional, applied to all selected files)</label>
           <input value={caption} onChange={(e) => setCaption(e.target.value)} />
         </div>
         <div className="admin-field">
-          <label>Images (select multiple)</label>
-          <input type="file" accept="image/*" multiple onChange={handleFilesChosen} required />
+          <label>Images or videos (select multiple · videos: MP4/MOV/WebM, max 100MB)</label>
+          <input type="file" accept="image/*,video/mp4,video/quicktime,video/webm" multiple onChange={handleFilesChosen} required />
         </div>
 
         {queue.length > 0 && (
           <ul className="admin-upload-queue">
             {queue.map((item) => (
               <li key={item.id} className={`admin-upload-item status-${item.status}`}>
-                <span className="admin-upload-name">{item.file.name}</span>
+                <span className="admin-upload-name">{isVideoFile(item.file) ? "🎬 " : ""}{item.file.name}</span>
                 <span className="admin-upload-status">
                   {item.status === "pending" && "Waiting"}
                   {item.status === "uploading" && "Uploading..."}
@@ -118,7 +120,7 @@ export default function WorkImageForm({ token, clients, onAdded }) {
             {busy
               ? `Uploading ${doneCount + 1}/${queue.length}...`
               : queue.length > 0
-                ? `Upload ${queue.length} image${queue.length > 1 ? "s" : ""}`
+                ? `Upload ${queue.length} file${queue.length > 1 ? "s" : ""}`
                 : "Upload"}
           </button>
           {queue.length > 0 && !busy && (
@@ -128,10 +130,10 @@ export default function WorkImageForm({ token, clients, onAdded }) {
           )}
         </div>
 
-        {allDone && <p className="admin-upload-summary">All {doneCount} images uploaded.</p>}
+        {allDone && <p className="admin-upload-summary">All {doneCount} files uploaded.</p>}
         {!busy && errorCount > 0 && (
           <p className="admin-error">
-            {errorCount} image{errorCount > 1 ? "s" : ""} failed — fix and resubmit to retry just
+            {errorCount} file{errorCount > 1 ? "s" : ""} failed — fix and resubmit to retry just
             those.
           </p>
         )}
